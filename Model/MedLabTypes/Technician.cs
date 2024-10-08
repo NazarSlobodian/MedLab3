@@ -6,14 +6,11 @@ using System.Threading.Tasks;
 
 namespace MedLab.Model.MedLabTypes
 {
-    public class Patient
+    public class Technician
     {
         public string FullName { get; set; }
-        public char Gender { get; set; }
-        public MySql.Data.Types.MySqlDateTime DateOfBirth { get; set; }
         public string Email { get; set; }
         public string ContactNumber { get; set; }
-        public string PatientPassword { get; set; }
-        public List<TestBatch> TestBatches { get; set; }
+        public List<TestOrder> TestOrders { get; set; }
     }
 }

@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MedLab.Model.MedLabTypes
+{
+    public class TestOrder
+    {
+        public TestType TestType { get; set; }
+        public TestResult? TestResult { get; set; }
+    }
+}

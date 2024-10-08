@@ -22,6 +22,7 @@ namespace MedLab
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new ViewModel.MedLabActionViewModel();
             //string str = ConfigurationManager.ConnectionStrings["connectionString"].ToString();
             //MySqlConnection connection = new MySqlConnection(str);
 

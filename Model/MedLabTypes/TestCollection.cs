@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MedLab.Model
+namespace MedLab.Model.MedLabTypes
 {
-    public class MedlabService
+    public class TestCollection
     {
-
+        public List<TestType> TestTypes {  get; set; }  
     }
 }
