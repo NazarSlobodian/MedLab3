@@ -49,6 +49,26 @@ namespace MedLab.Model.Utils
             "Naukova",
             "Radisna"
         };
+        private List<string> measurementUnits = new List<string>()
+        {
+            "mg/dL",
+            "mmol/L",
+            "g/dL",
+            "IU/L",
+            "ng/mL",
+            "pg/mL",
+            "μmol/L",
+            "mEq/L",
+            "U/L",
+            "cells/μL",
+            "fL",
+            "g/L",
+            "mm/h",
+            "μg/dL",
+            "mL/min",
+            "kPa",
+            "mmHg"
+        };
         public string GeneratePhoneNumber()
         {
             StringBuilder phoneNumber = new StringBuilder("380");
@@ -63,7 +83,7 @@ namespace MedLab.Model.Utils
         {
             int usernameLength = random.Next(8, 100);
             StringBuilder username = new StringBuilder();
-            for (int i = 0; i<usernameLength; i++)
+            for (int i = 0; i < usernameLength; i++)
             {
                 username.Append(emailCharacters[random.Next(0, emailCharacters.Length)]);
             }
@@ -75,6 +95,52 @@ namespace MedLab.Model.Utils
             string street = streets[random.Next(0, streets.Count)];
             int building = random.Next(1, 101);
             return $"{city}, {street} {building}";
+        }
+        public string GenerateDate(DateTime start, DateTime end)
+        {
+            int range = (end - start).Days + 1;
+            DateTime randomDate = start.AddDays(random.Next(range));
+            return randomDate.ToString("yyyy-MM-dd");
+        }
+        public char GenerateGender()
+        {
+            if (random.Next(0, 2) == 1)
+            {
+                return 'm';
+            }
+            return 'f';
+        }
+        public string GeneratePassword()
+        {
+            int passwordLength = random.Next(8, 30);
+            StringBuilder password = new StringBuilder();
+            for (int i = 0; i < passwordLength; i++)
+            {
+                password.Append(emailCharacters[random.Next(0, emailCharacters.Length)]);
+            }
+            return password.ToString();
+        }
+        public double RandomTestResult()
+        {
+            return random.NextDouble() * 1000.0;
+        }
+        public char GenerateBatchStatus()
+        {
+            switch (random.Next(0, 3))
+            {
+                case 0:
+                    return 'q';
+                case 1:
+                    return 'p';
+                case 2:
+                    return 's';
+                default:
+                    return '4';
+            }
+        }
+        public string GenerateMeasurementUnit()
+        {
+            return measurementUnits[random.Next(0, measurementUnits.Count)];
         }
     }
 }
