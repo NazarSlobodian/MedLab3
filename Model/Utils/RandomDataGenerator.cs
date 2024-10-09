@@ -159,9 +159,9 @@ namespace MedLab.Model.Utils
             }
             return password.ToString();
         }
-        public double RandomTestResult()
+        public double RandomTestResult(double low, double high)
         {
-            return random.NextDouble() * 1000.0;
+            return (random.NextDouble() * (high-low)) + low;
         }
         public char GenerateBatchStatus()
         {
@@ -203,7 +203,7 @@ namespace MedLab.Model.Utils
                         new TestNormalValues()
                         {
                             TestNormalValuesID = 1,
-                            MinAge = 18,
+                            MinAge = 0,
                             MaxAge = 45,
                             Gender = 'm',
                             MinResValue = 13.8,
@@ -212,7 +212,7 @@ namespace MedLab.Model.Utils
                         new TestNormalValues()
                         {
                             TestNormalValuesID = 2,
-                            MinAge = 18,
+                            MinAge = 0,
                             MaxAge = 45,
                             Gender = 'f',
                             MinResValue = 12.1,
@@ -250,7 +250,7 @@ namespace MedLab.Model.Utils
                         new TestNormalValues()
                         {
                             TestNormalValuesID = 5,
-                            MinAge = 18,
+                            MinAge = 0,
                             MaxAge = 45,
                             Gender = 'm',
                             MinResValue = 4.5,
@@ -259,7 +259,7 @@ namespace MedLab.Model.Utils
                         new TestNormalValues()
                         {
                             TestNormalValuesID = 6,
-                            MinAge = 18,
+                            MinAge = 0,
                             MaxAge = 45,
                             Gender = 'f',
                             MinResValue = 4.5,
@@ -297,7 +297,7 @@ namespace MedLab.Model.Utils
                         new TestNormalValues()
                         {
                             TestNormalValuesID = 9,
-                            MinAge = 18,
+                            MinAge = 0,
                             MaxAge = 45,
                             Gender = 'm',
                             MinResValue = 70.0,
@@ -306,7 +306,7 @@ namespace MedLab.Model.Utils
                         new TestNormalValues()
                         {
                             TestNormalValuesID = 10,
-                            MinAge = 18,
+                            MinAge = 0,
                             MaxAge = 45,
                             Gender = 'f',
                             MinResValue = 70.0,
@@ -344,7 +344,7 @@ namespace MedLab.Model.Utils
                         new TestNormalValues()
                         {
                             TestNormalValuesID = 13,
-                            MinAge = 18,
+                            MinAge = 0,
                             MaxAge = 45,
                             Gender = 'm',
                             MinResValue = 0.74,
@@ -353,7 +353,7 @@ namespace MedLab.Model.Utils
                         new TestNormalValues()
                         {
                             TestNormalValuesID = 14,
-                            MinAge = 18,
+                            MinAge = 0,
                             MaxAge = 45,
                             Gender = 'f',
                             MinResValue = 0.59,
@@ -391,7 +391,7 @@ namespace MedLab.Model.Utils
                         new TestNormalValues()
                         {
                             TestNormalValuesID = 17,
-                            MinAge = 18,
+                            MinAge = 0,
                             MaxAge = 45,
                             Gender = 'm',
                             MinResValue = 10.0,
@@ -400,7 +400,7 @@ namespace MedLab.Model.Utils
                         new TestNormalValues()
                         {
                         TestNormalValuesID = 18,
-                            MinAge = 18,
+                            MinAge = 0,
                             MaxAge = 45,
                             Gender = 'f',
                             MinResValue = 7.0,

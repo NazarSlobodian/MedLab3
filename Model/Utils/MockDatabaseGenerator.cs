@@ -42,26 +42,26 @@ namespace MedLab.Model.Utils
                 " FROM information_schema.TABLES" +
                 " WHERE TABLE_SCHEMA = \"medlab\"" +
                 " AND TABLE_NAME = \"test_orders\"", connection);
-            MySqlCommand cmdResults = new MySqlCommand(
-                "SELECT AUTO_INCREMENT" +
-                " FROM information_schema.TABLES" +
-                " WHERE TABLE_SCHEMA = \"medlab\"" +
-                " AND TABLE_NAME = \"test_results\"", connection);
-            MySqlCommand cmdType = new MySqlCommand(
-                "SELECT AUTO_INCREMENT" +
-                " FROM information_schema.TABLES" +
-                " WHERE TABLE_SCHEMA = \"medlab\"" +
-                " AND TABLE_NAME = \"test_types\"", connection);
-            MySqlCommand cmdNormal = new MySqlCommand(
-                "SELECT AUTO_INCREMENT" +
-                " FROM information_schema.TABLES" +
-                " WHERE TABLE_SCHEMA = \"medlab\"" +
-                " AND TABLE_NAME = \"test_normal_values\"", connection);
-            MySqlCommand cmdTestCollection= new MySqlCommand(
-                "SELECT AUTO_INCREMENT" +
-                " FROM information_schema.TABLES" +
-                " WHERE TABLE_SCHEMA = \"medlab\"" +
-                " AND TABLE_NAME = \"test_collections\"", connection);
+            //MySqlCommand cmdResults = new MySqlCommand(
+            //    "SELECT AUTO_INCREMENT" +
+            //    " FROM information_schema.TABLES" +
+            //    " WHERE TABLE_SCHEMA = \"medlab\"" +
+            //    " AND TABLE_NAME = \"test_results\"", connection);
+            //MySqlCommand cmdType = new MySqlCommand(
+            //    "SELECT AUTO_INCREMENT" +
+            //    " FROM information_schema.TABLES" +
+            //    " WHERE TABLE_SCHEMA = \"medlab\"" +
+            //    " AND TABLE_NAME = \"test_types\"", connection);
+            //MySqlCommand cmdNormal = new MySqlCommand(
+            //    "SELECT AUTO_INCREMENT" +
+            //    " FROM information_schema.TABLES" +
+            //    " WHERE TABLE_SCHEMA = \"medlab\"" +
+            //    " AND TABLE_NAME = \"test_normal_values\"", connection);
+            //MySqlCommand cmdTestCollection = new MySqlCommand(
+            //    "SELECT AUTO_INCREMENT" +
+            //    " FROM information_schema.TABLES" +
+            //    " WHERE TABLE_SCHEMA = \"medlab\"" +
+            //    " AND TABLE_NAME = \"test_collections\"", connection);
             connection.Open();
             int labID = Convert.ToInt32(cmdLabs.ExecuteScalar());
             int techID = Convert.ToInt32(cmdTechs.ExecuteScalar());
@@ -69,11 +69,10 @@ namespace MedLab.Model.Utils
             int batchID = Convert.ToInt32(cmdBatches.ExecuteScalar());
             int orderID = Convert.ToInt32(cmdOrders.ExecuteScalar());
             //int resultID = Convert.ToInt32(cmdResults.ExecuteScalar());
-            int typeID = Convert.ToInt32(cmdType.ExecuteScalar());
+            //int typeID = Convert.ToInt32(cmdType.ExecuteScalar());
             //int normalID = Convert.ToInt32(cmdNormal.ExecuteScalar());
-            int testCollectionID = Convert.ToInt32(cmdTestCollection.ExecuteScalar());
+            //int testCollectionID = Convert.ToInt32(cmdTestCollection.ExecuteScalar());
             connection.Close();
-            
 
             RandomDataGenerator randomDataGenerator = new RandomDataGenerator();
 
@@ -114,9 +113,9 @@ namespace MedLab.Model.Utils
                 laboratories.Add(new Laboratory()
                 {
                     LaboratoryID = labID,
+                    Address = address,
                     Email = email,
                     ContactNumber = contactNumber,
-                    Address = address,
                     Technicians = new List<Technician>()
                 });
                 labID++;
@@ -154,7 +153,8 @@ namespace MedLab.Model.Utils
                         TechnicianID = techID,
                         FullName = fullName,
                         Email = email,
-                        ContactNumber = contactNumber
+                        ContactNumber = contactNumber,
+                        TestOrders = new List<TestOrder>()
                     });
                     techID++;
                     techniciansGenerated++;
@@ -198,10 +198,10 @@ namespace MedLab.Model.Utils
             foreach (Patient patient in patients)
             {
                 int amountOfBatches = random.Next(1, 3);
-                for (int i = 0; i<amountOfBatches; i++)
+                for (int i = 0; i < amountOfBatches; i++)
                 {
                     char status = randomDataGenerator.GenerateBatchStatus();
-                    DateTime timeOfCreation = randomDataGenerator.GenerateDateTime(new DateTime(2024, 9, 2), DateTime.Now);
+                    DateTime timeOfCreation = randomDataGenerator.GenerateDateTime(new DateTime(2024, 9, 2), new DateTime(2024, 10, 1));
                     patient.TestBatches.Add(new TestBatch()
                     {
                         TestBatchID = batchID,
@@ -212,12 +212,59 @@ namespace MedLab.Model.Utils
                     batchID++;
                 }
             }
-            // testTypes
-
-            // testCollection
-
+            // test order
+            foreach (Patient patient in patients)
+            {
+                foreach (TestBatch batch in patient.TestBatches)
+                {
+                    int amountOfTests = random.Next(1, testTypes.Count);
+                    for (int testsAdded = 0; testsAdded < amountOfTests;)
+                    {
+                        TestType testType = testTypes[random.Next(1, testTypes.Count)];
+                        bool validLabValues = true;
+                        for (int i = 0; i < batch.TestOrders.Count; i++)
+                        {
+                            if (batch.TestOrders[i].TestType == testType)
+                            {
+                                validLabValues = false;
+                                break;
+                            }
+                        }
+                        if (!validLabValues)
+                            continue;
+                        TestResult result = null;
+                        if (batch.Status != 'q')
+                        {
+                            int patientAge = (int)(DateTime.Now - patient.DateOfBirth).TotalDays / 365;
+                            TestNormalValues resultNormalValues = testTypes
+                                .Find((x) => x == testType).TestNormalValues
+                                .Find((x) =>
+                                (x.Gender == patient.Gender) && patientAge >= x.MinAge && patientAge <= x.MaxAge);
+                            double testResult = randomDataGenerator.RandomTestResult(resultNormalValues.MinResValue, resultNormalValues.MaxResValue);
+                            DateTime dateOfTest = randomDataGenerator.GenerateDate(batch.DateOfCreation, DateTime.Now);
+                            result = new TestResult()
+                            {
+                                TestResultID = orderID,
+                                Result = testResult,
+                                DateOfTest = dateOfTest
+                            };
+                        }
+                        TestOrder order = new TestOrder()
+                        {
+                            TestOrderID = orderID,
+                            TestType = testType,
+                            TestResult = result
+                        };
+                        List<Technician> technicians = laboratories[random.Next(0, laboratories.Count)].Technicians;
+                        technicians[random.Next(0, technicians.Count)].TestOrders.Add(order);
+                        batch.TestOrders.Add(order);
+                        orderID++;
+                        testsAdded++;
+                    }
+                }
+            }
             //order
-
+            //result
 
             return;
         }
