@@ -1,0 +1,182 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Printing;
+using System.Text;
+using System.Threading.Tasks;
+using MedLab.Model.MedLabTypes;
+
+namespace MedLab.Model
+{
+    public class MedLabData
+    {
+        private List<Patient> patients;
+        private List<Laboratory> laboratories;
+        private List<TestType> testTypes;
+        private List<TestCollection> testCollections;
+        public MedLabData(List<Patient> patients, List<Laboratory> laboratory, List<TestType> testTypes, List<TestCollection> testCollections)
+        {
+            this.patients = patients;
+            this.laboratories = laboratory;
+            this.testTypes = testTypes;
+            this.testCollections = testCollections;
+        }
+        public string Sqlize()
+        {
+            StringBuilder testCollectionsInsert = new StringBuilder("INSERT INTO `medlab`.`test_collections` (`testCollectionID`, `collectionName`)\r\nVALUES\r\n");
+            StringBuilder includedTestsInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`included_tests_for_collection` (`testCollectionID`, `testTypeID`)\r\nVALUES\r\n");
+
+            StringBuilder testTypesInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`test_types` (`testTypeID`, `testName`, `cost`, `daysTillOverdue`, `measurementsUnit`)\r\nVALUES\r\n");
+            StringBuilder testNormalValuesInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`test_normal_values` (`testTypeID`, `minAge`, `maxAge`, `gender`, `minResValue`, `maxResValue`)\r\nVALUES\r\n");
+
+            StringBuilder labsInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`laboratories` (`laboratoryID`, `address`, `email`, `contactNumber`)\r\nVALUES\r\n");
+            StringBuilder techsInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`technicians` (`technicianID`, `fullName`, `email`, `contactNumber`, `laboratoryID`)\r\nVALUES\r\n");
+
+            StringBuilder patientsInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`patients`\r\n(`patientID`,\r\n`fullName`,\r\n`gender`,\r\n`dateOfBirth`,\r\n`email`,\r\n`contactNumber`,\r\n`patientPassword`)\r\nVALUES\r\n");
+            StringBuilder testBatchesInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`test_batches`\r\n(`testBatchID`,\r\n`batchStatus`,\r\n`dateOfCreation`,\r\n`patientID`)\r\nVALUES\r\n");
+            StringBuilder testOrderInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`test_orders`\r\n(`testOrderID`,\r\n`technicianID`,\r\n`testTypeID`,\r\n`testBatchID`)\r\nVALUES\r\n");
+            StringBuilder testResultInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`test_results`\r\n(`testOrderID`,\r\n`result`,\r\n`dateOfTest`)\r\nVALUES\r\n");
+
+            bool firstTestCollection = true;
+            bool firstIncludedTests = true;
+
+            bool firstTestType = true;
+            bool firstTestNormalValue = true;
+
+            bool firstLab = true;
+            bool firstTech = true;
+
+            bool firstPatient = true;
+            bool firstBatch = true;
+            bool firstOrder = true;
+            bool firstResult = true;
+
+            foreach (TestCollection testCollection in testCollections)
+            {
+                if (!firstTestCollection)
+                {
+                    testCollectionsInsert.Append(",\r\n");
+                }
+                testCollectionsInsert.Append($"({testCollection.TestCollectionID}, '{testCollection.TestCollectionName}')");
+                firstTestCollection = false;
+
+                foreach (TestType testType in testCollection.TestTypes)
+                {
+                    if (!firstIncludedTests)
+                    {
+                        includedTestsInsert.Append(",\r\n");
+                    }
+                    includedTestsInsert.Append($"({testCollection.TestCollectionID}, '{testType.TestTypeID}')");
+                    firstIncludedTests = false;
+                }
+            }
+
+            foreach (TestType type in testTypes)
+            {
+                if (!firstTestType)
+                {
+                    testTypesInsert.Append(",\r\n");
+                }
+                testTypesInsert.Append($"({type.TestTypeID}, '{type.TestName}', '{type.Cost}', '{type.DaysTillOverdue}', '{type.MeasurementUnit}')");
+                firstTestType = false;
+
+                foreach (TestNormalValues normal in type.TestNormalValues)
+                {
+                    if (!firstTestNormalValue)
+                    {
+                        testNormalValuesInsert.Append(",\r\n");
+                    }
+                    testNormalValuesInsert.Append($"({type.TestTypeID}, '{normal.MinAge}', '{normal.MaxAge}', '{normal.Gender}', '{normal.MinResValue}', '{normal.MaxResValue}')");
+                    firstTestNormalValue = false;
+                }
+            }
+
+            foreach (Laboratory lab in laboratories)
+            {
+                if (!firstLab)
+                {
+                    labsInsert.Append(",\r\n");
+                }
+                labsInsert.Append($"({lab.LaboratoryID}, '{lab.Address}', '{lab.Email}', '{lab.ContactNumber}')");
+                firstLab = false;
+
+                foreach (Technician tech in lab.Technicians)
+                {
+                    if (!firstTech)
+                    {
+                        techsInsert.Append(",\r\n");
+                    }
+                    techsInsert.Append($"({tech.TechnicianID}, '{tech.FullName}', '{tech.Email}', '{tech.ContactNumber}', '{lab.LaboratoryID}')");
+                    firstTech = false;
+                }
+            }
+
+            foreach (Patient patient in patients)
+            {
+                if (!firstPatient)
+                {
+                    patientsInsert.Append(",\r\n");
+                }
+                patientsInsert.Append($"({patient.PatientID}, '{patient.FullName}', '{patient.Gender}', '{patient.DateOfBirth}', '{patient.Email}', '{patient.ContactNumber}', '{patient.PatientPassword}')");
+                firstPatient = false;
+
+                foreach (TestBatch batch in patient.TestBatches)
+                {
+                    if (!firstBatch)
+                    {
+                        testBatchesInsert.Append(",\r\n");
+                    }
+                    testBatchesInsert.Append($"({batch.TestBatchID}, '{batch.Status}', '{batch.DateOfCreation}', '{patient.PatientID}')");
+                    firstBatch = false;
+
+                    foreach (TestOrder order in batch.TestOrders)
+                    {
+                        // find who did test
+                        int techId = -1;
+                        bool orderMatched = false;
+                        foreach (Laboratory lab in laboratories)
+                        {
+                            if (orderMatched)
+                                break;
+                            foreach (Technician tech in lab.Technicians)
+                            {
+                                if (orderMatched)
+                                    break;
+                                foreach (TestOrder techOrder in tech.TestOrders)
+                                {
+                                    if (techOrder.TestOrderID == order.TestOrderID)
+                                    {
+                                        techId = tech.TechnicianID;
+                                        orderMatched = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (!firstOrder)
+                        {
+                            testOrderInsert.Append(",\r\n");
+                        }
+                        testOrderInsert.Append($"({order.TestOrderID}, '{techId}', '{order.TestType.TestTypeID}', '{batch.TestBatchID}')");
+                        firstOrder = false;
+
+                        if (order.TestResult == null)
+                            continue;
+                        if (!firstResult)
+                        {
+                            testResultInsert.Append(",\r\n");
+                        }
+                        testResultInsert.Append($"({order.TestOrderID}, '{order.TestResult.Result}', '{order.TestResult.DateOfTest}')");
+                        firstResult = false;
+                    }
+                }
+            }
+
+            return (testCollectionsInsert.ToString() + includedTestsInsert.ToString()
+                + testTypesInsert.ToString() + testNormalValuesInsert.ToString()
+                + labsInsert.ToString() + techsInsert.ToString()
+                + patientsInsert.ToString() + testBatchesInsert.ToString() + testOrderInsert.ToString() + testResultInsert.ToString());
+        }
+    }
+}

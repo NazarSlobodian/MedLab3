@@ -10,6 +10,6 @@ namespace MedLab.Model.MedLabTypes
     {
         public int TestResultID { get; set; }
         public double Result { get; set; }
-        public DateTime DateOfTest { get; set; }
+        public string DateOfTest { get; set; }
     }
 }

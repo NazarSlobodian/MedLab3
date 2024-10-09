@@ -12,7 +12,7 @@ namespace MedLab.Model.Utils
 {
     public class MockDatabaseGenerator
     {
-        public void Generate()
+        public MedLabData GenerateData()
         {
             string str = ConfigurationManager.ConnectionStrings["connectionString"].ToString();
             MySqlConnection connection = new MySqlConnection(str);
@@ -185,7 +185,7 @@ namespace MedLab.Model.Utils
                     PatientID = patientID,
                     FullName = fullName,
                     Gender = gender,
-                    DateOfBirth = dateOfBirth,
+                    DateOfBirth = dateOfBirth.ToString("yyyy-MM-dd"),
                     Email = email,
                     ContactNumber = contactNumber,
                     PatientPassword = password,
@@ -235,7 +235,7 @@ namespace MedLab.Model.Utils
                         TestResult result = null;
                         if (batch.Status != 'q')
                         {
-                            int patientAge = (int)(DateTime.Now - patient.DateOfBirth).TotalDays / 365;
+                            int patientAge = (int)(DateTime.Now - DateTime.Parse(patient.DateOfBirth)).TotalDays / 365;
                             TestNormalValues resultNormalValues = testTypes
                                 .Find((x) => x == testType).TestNormalValues
                                 .Find((x) =>
@@ -246,7 +246,7 @@ namespace MedLab.Model.Utils
                             {
                                 TestResultID = orderID,
                                 Result = testResult,
-                                DateOfTest = dateOfTest
+                                DateOfTest = dateOfTest.ToString("yyyy-MM-dd")
                             };
                         }
                         TestOrder order = new TestOrder()
@@ -263,10 +263,7 @@ namespace MedLab.Model.Utils
                     }
                 }
             }
-            //order
-            //result
-
-            return;
+            return new MedLabData(patients, laboratories, testTypes, testCollection);
         }
     }
 }
