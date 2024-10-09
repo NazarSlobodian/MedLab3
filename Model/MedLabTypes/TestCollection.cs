@@ -8,6 +8,8 @@ namespace MedLab.Model.MedLabTypes
 {
     public class TestCollection
     {
+        public int TestCollectionID { get; set; }
+        public string TestCollectionName { get; set; }
         public List<TestType> TestTypes {  get; set; }  
     }
 }

@@ -23,16 +23,6 @@ namespace MedLab
         {
             InitializeComponent();
             DataContext = new ViewModel.MedLabActionViewModel();
-            //string str = ConfigurationManager.ConnectionStrings["connectionString"].ToString();
-            //MySqlConnection connection = new MySqlConnection(str);
-
-            //MySqlCommand cmd = new MySqlCommand("SELECT * FROM patients", connection);
-
-            //connection.Open();
-            //DataTable dataTable = new DataTable();
-            //dataTable.Load(cmd.ExecuteReader());
-            //connection.Close();
-            //dbTable.ItemsSource = dataTable.DefaultView;
         }
     }
 }

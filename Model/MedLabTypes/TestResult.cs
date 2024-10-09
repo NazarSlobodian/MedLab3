@@ -8,6 +8,7 @@ namespace MedLab.Model.MedLabTypes
 {
     public class TestResult
     {
+        public int TestResultID { get; set; }
         public double Result { get; set; }
         MySql.Data.Types.MySqlDateTime DateOfTest { get; set; }
     }

@@ -8,6 +8,7 @@ namespace MedLab.Model.MedLabTypes
 {
     public class TestOrder
     {
+        public int TestOrderID { get; set; }
         public TestType TestType { get; set; }
         public TestResult? TestResult { get; set; }
     }

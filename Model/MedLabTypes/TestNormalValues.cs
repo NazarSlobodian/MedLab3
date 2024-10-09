@@ -8,6 +8,7 @@ namespace MedLab.Model.MedLabTypes
 {
     public class TestNormalValues
     {
+        public int TestNormalValuesID { get; set; }
         public int MinAge { get; set; }
         public int MaxAge { get; set; }
         public char Gender { get; set; }

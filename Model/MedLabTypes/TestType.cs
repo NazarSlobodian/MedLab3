@@ -8,6 +8,7 @@ namespace MedLab.Model.MedLabTypes
 {
     public class TestType
     {
+        public int TestTypeID { get; set; }
         public string TestName { get; set; }
         public decimal Cost { get; set; }
         public int DaysTillOverdue { get; set; }
