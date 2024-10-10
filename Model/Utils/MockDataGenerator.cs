@@ -12,7 +12,7 @@ namespace MedLab.Model.Utils
 {
     public class MockDataGenerator
     {
-        public MedLabData GenerateData(bool validTestTypes)
+        public MedLabData GenerateData(GenerationAmounts generatedAmount, bool validTestTypes)
         {
             string str = ConfigurationManager.ConnectionStrings["connectionString"].ToString();
             MySqlConnection connection = new MySqlConnection(str);
@@ -96,7 +96,7 @@ namespace MedLab.Model.Utils
 
             Random random = new Random();
             //labs
-            int amountOfLabs = random.Next(1, 11);
+            int amountOfLabs = generatedAmount.labAmount;
             List<Laboratory> laboratories = new List<Laboratory>();
             for (int labsGenerated = 0; labsGenerated < amountOfLabs;)
             {
@@ -140,7 +140,7 @@ namespace MedLab.Model.Utils
             // techs for labs
             for (int i = 0; i < laboratories.Count; i++)
             {
-                int amountOfTechnicians = random.Next(1, 5);
+                int amountOfTechnicians = generatedAmount.techAmount;
                 for (int techniciansGenerated = 0; techniciansGenerated < amountOfTechnicians;)
                 {
                     string fullName = randomDataGenerator.GenerateFullname();
@@ -177,7 +177,7 @@ namespace MedLab.Model.Utils
                 }
             }
             //patients
-            int patientAmount = random.Next(10, 20);
+            int patientAmount = generatedAmount.patientAmount;
             List<Patient> patients = new List<Patient>();
             for (int patientsGenerated = 0; patientsGenerated < patientAmount;)
             {
@@ -213,7 +213,7 @@ namespace MedLab.Model.Utils
             // batches
             foreach (Patient patient in patients)
             {
-                int amountOfBatches = random.Next(1, 3);
+                int amountOfBatches = generatedAmount.batchesPerPatient;
                 for (int i = 0; i < amountOfBatches; i++)
                 {
                     char status = randomDataGenerator.GenerateBatchStatus();
@@ -233,7 +233,7 @@ namespace MedLab.Model.Utils
             {
                 foreach (TestBatch batch in patient.TestBatches)
                 {
-                    int amountOfTests = random.Next(1, testTypes.Count);
+                    int amountOfTests = generatedAmount.ordersPerBatch;
                     for (int testsAdded = 0; testsAdded < amountOfTests;)
                     {
                         TestType testType = testTypes[random.Next(1, testTypes.Count)];

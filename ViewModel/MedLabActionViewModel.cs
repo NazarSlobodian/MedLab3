@@ -87,7 +87,10 @@ namespace MedLab.ViewModel
         {
             try
             {
-                medLabDatabase.GenerateAndSqlize(false);
+                medLabDatabase.GenerateAndSqlize(
+                    new GenerationAmounts(LabAmount, TechAmount, PatientAmount,
+                    BatchesPerPatient, OrdersPerBatch),
+                    false);
             }
             catch (InvalidOperationException exception)
             {
@@ -98,7 +101,10 @@ namespace MedLab.ViewModel
         {
             try
             {
-                medLabDatabase.GenerateAndSqlizeInFile(false);
+                medLabDatabase.GenerateAndSqlizeInFile(
+                    new GenerationAmounts(LabAmount, TechAmount, PatientAmount,
+                    BatchesPerPatient, OrdersPerBatch),
+                    false);
             }
             catch (InvalidOperationException exception)
             {
@@ -112,7 +118,10 @@ namespace MedLab.ViewModel
             ErrorPopupViewModel errorViewModel = new ErrorPopupViewModel(
                 proceedAction: () =>
                 {
-                    medLabDatabase.GenerateAndSqlize(true);
+                    medLabDatabase.GenerateAndSqlize(
+                        new GenerationAmounts(LabAmount, TechAmount, PatientAmount,
+                        BatchesPerPatient,OrdersPerBatch),
+                        true);
                     popup.Close();
                 },
                 abortAction: () =>
@@ -131,7 +140,9 @@ namespace MedLab.ViewModel
             ErrorPopupViewModel errorViewModel = new ErrorPopupViewModel(
                 proceedAction: () =>
                 {
-                    medLabDatabase.GenerateAndSqlizeInFile(true);
+                    medLabDatabase.GenerateAndSqlizeInFile(new GenerationAmounts(LabAmount, TechAmount, PatientAmount,
+                        BatchesPerPatient, OrdersPerBatch),
+                        true);
                     popup.Close();
                 },
                 abortAction: () =>

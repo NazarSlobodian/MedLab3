@@ -13,16 +13,16 @@ namespace MedLab.Model
     public class MedLabActions
     {
         MockDataGenerator databaseGenerator = new MockDataGenerator();
-        public void GenerateAndSqlizeInFile(bool validTestTypes)
+        public void GenerateAndSqlizeInFile(GenerationAmounts generatedAmount, bool validTestTypes)
         {
-            string statement = GenerateAndSqlize(validTestTypes);
+            string statement = GenerateAndSqlize(generatedAmount, validTestTypes);
             string exeDirectory = AppDomain.CurrentDomain.BaseDirectory;
             string filePath = Path.Combine(exeDirectory, "InsertSample.txt");
             File.WriteAllText(filePath, statement);
         }
-        public string GenerateAndSqlize(bool validTestTypes)
+        public string GenerateAndSqlize(GenerationAmounts generatedAmount, bool validTestTypes)
         {
-            MedLabData data = databaseGenerator.GenerateData(validTestTypes);
+            MedLabData data = databaseGenerator.GenerateData(generatedAmount, validTestTypes);
             string statement = data.Sqlize(validTestTypes);
             return statement;
         }

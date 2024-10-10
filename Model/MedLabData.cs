@@ -39,6 +39,8 @@ namespace MedLab.Model
             StringBuilder testOrderInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`test_orders`\r\n(`testOrderID`,\r\n`technicianID`,\r\n`testTypeID`,\r\n`testBatchID`)\r\nVALUES\r\n");
             StringBuilder testResultInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`test_results`\r\n(`testOrderID`,\r\n`result`,\r\n`dateOfTest`)\r\nVALUES\r\n");
 
+            bool firstInsertInserted = false;
+
             bool firstTestCollection = true;
             bool firstTestType = true;
 
@@ -177,6 +179,20 @@ namespace MedLab.Model
                     }
                 }
             }
+
+            if (firstLab)
+                labsInsert.Clear();
+            if (firstTech)
+                techsInsert.Clear();
+            if (firstPatient)
+                patientsInsert.Clear();
+            if (firstBatch)
+                testBatchesInsert.Clear();
+            if (firstOrder)
+                testOrderInsert.Clear();
+            if (firstResult)
+                testResultInsert.Clear();
+
             if (!skipTestTypeData)
             {
                 return (testCollectionsInsert.ToString() + testTypesInsert.ToString() + includedTestsInsert.ToString() + testNormalValuesInsert.ToString()
