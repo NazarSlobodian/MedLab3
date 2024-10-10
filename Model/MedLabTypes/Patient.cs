@@ -11,7 +11,7 @@ namespace MedLab.Model.MedLabTypes
         public int PatientID { get; set; }
         public string FullName { get; set; }
         public char Gender { get; set; }
-        public string DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
         public string Email { get; set; }
         public string ContactNumber { get; set; }
         public string PatientPassword { get; set; }
