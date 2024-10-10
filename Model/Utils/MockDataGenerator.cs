@@ -234,9 +234,10 @@ namespace MedLab.Model.Utils
                 foreach (TestBatch batch in patient.TestBatches)
                 {
                     int amountOfTests = generatedAmount.ordersPerBatch;
+                    int testTypeIndex = random.Next(1, testTypes.Count);
                     for (int testsAdded = 0; testsAdded < amountOfTests;)
                     {
-                        TestType testType = testTypes[random.Next(1, testTypes.Count)];
+                        TestType testType = testTypes[testTypeIndex];
                         bool validLabValues = true;
                         for (int i = 0; i < batch.TestOrders.Count; i++)
                         {
@@ -247,7 +248,12 @@ namespace MedLab.Model.Utils
                             }
                         }
                         if (!validLabValues)
+                        {
+                            testTypeIndex++;
+                            if (testTypeIndex >= testTypes.Count)
+                                testTypeIndex = 0;
                             continue;
+                        }
                         TestResult result = null;
                         if (batch.Status != 'q')
                         {
