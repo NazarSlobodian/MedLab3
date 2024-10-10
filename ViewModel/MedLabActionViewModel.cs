@@ -28,6 +28,56 @@ namespace MedLab.ViewModel
         public ICommand TruncateAllCommand { get; }
         public ICommand GenerateAndSqlizeExecuteCommand { get; }
         public ICommand GenerateAndSqlizeInFileCommand { get; }
+        private int labAmount = 1;
+        public int LabAmount
+        {
+            get { return labAmount; }
+            set
+            {
+                labAmount = value;
+                OnPropertyChanged(nameof(LabAmount));
+            }
+        }
+        private int techAmount = 1;
+        public int TechAmount
+        {
+            get { return techAmount; }
+            set
+            {
+                techAmount = value;
+                OnPropertyChanged(nameof(TechAmount));
+            }
+        }
+        private int patientAmount = 1;
+        public int PatientAmount
+        {
+            get { return patientAmount; }
+            set
+            {
+                patientAmount = value;
+                OnPropertyChanged(nameof(PatientAmount));
+            }
+        }
+        private int batchesPerPatient = 1;
+        public int BatchesPerPatient
+        {
+            get { return batchesPerPatient; }
+            set
+            {
+                batchesPerPatient = value;
+                OnPropertyChanged(nameof(BatchesPerPatient));
+            }
+        }
+        private int ordersPerBatch = 1;
+        public int OrdersPerBatch
+        {
+            get { return ordersPerBatch; }
+            set
+            {
+                ordersPerBatch = value;
+                OnPropertyChanged(nameof(OrdersPerBatch));
+            }
+        }
 
         private void TruncateAll()
         {
