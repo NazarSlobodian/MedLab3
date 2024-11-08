@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MedLab.Model.Utils;
 using MySql.Data.MySqlClient;
+using Mysqlx.Prepare;
 
 namespace MedLab.Model
 {
@@ -20,17 +21,14 @@ namespace MedLab.Model
             string filePath = Path.Combine(exeDirectory, "InsertSample.txt");
             File.WriteAllText(filePath, statement);
         }
-        public string GenerateAndSqlize(GenerationAmounts generatedAmount, bool validTestTypes)
+        public void GenerateAndSqlizeExecute(GenerationAmounts generatedAmount, bool validTestTypes)
         {
-            MedLabData data = databaseGenerator.GenerateData(generatedAmount, validTestTypes);
-            string statement = data.Sqlize(validTestTypes);
-            return statement;
+            string statement = GenerateAndSqlize(generatedAmount, validTestTypes);
+            string exeDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            Execute(statement);
         }
         public void TruncateAll()
         {
-            string str = ConfigurationManager.ConnectionStrings["connectionString"].ToString();
-            MySqlConnection connection = new MySqlConnection(str);
-
             StringBuilder sb = new StringBuilder();
             sb.Append("SET FOREIGN_KEY_CHECKS = 0;\r\n");
 
@@ -47,7 +45,19 @@ namespace MedLab.Model
 
             sb.Append("SET FOREIGN_KEY_CHECKS = 1;\r\n");
 
-            MySqlCommand cmd = new MySqlCommand(sb.ToString(), connection);
+            Execute(sb.ToString());
+        }
+        private string GenerateAndSqlize(GenerationAmounts generatedAmount, bool validTestTypes)
+        {
+            MedLabData data = databaseGenerator.GenerateData(generatedAmount, validTestTypes);
+            string statement = data.Sqlize(validTestTypes);
+            return statement;
+        }
+        private void Execute(string statement)
+        {
+            string str = ConfigurationManager.ConnectionStrings["connectionString"].ToString();
+            MySqlConnection connection = new MySqlConnection(str);
+            MySqlCommand cmd = new MySqlCommand(statement, connection);
             connection.Open();
             cmd.ExecuteNonQuery();
             connection.Close();

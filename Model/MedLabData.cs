@@ -6,6 +6,7 @@ using System.Printing;
 using System.Text;
 using System.Threading.Tasks;
 using MedLab.Model.MedLabTypes;
+using Mysqlx.Crud;
 
 namespace MedLab.Model
 {
@@ -35,8 +36,8 @@ namespace MedLab.Model
             StringBuilder techsInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`technicians` (`technicianID`, `fullName`, `email`, `contactNumber`, `laboratoryID`)\r\nVALUES\r\n");
 
             StringBuilder patientsInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`patients`\r\n(`patientID`,\r\n`fullName`,\r\n`gender`,\r\n`dateOfBirth`,\r\n`email`,\r\n`contactNumber`,\r\n`patientPassword`)\r\nVALUES\r\n");
-            StringBuilder testBatchesInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`test_batches`\r\n(`testBatchID`,\r\n`batchStatus`,\r\n`dateOfCreation`,\r\n`patientID`)\r\nVALUES\r\n");
-            StringBuilder testOrderInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`test_orders`\r\n(`testOrderID`,\r\n`technicianID`,\r\n`testTypeID`,\r\n`testBatchID`)\r\nVALUES\r\n");
+            StringBuilder testBatchesInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`test_batches`\r\n(`testBatchID`,\r\n`batchStatus`,\r\n`dateOfCreation`,\r\n`patientID`,\r\n`technicianID`)\r\nVALUES\r\n");
+            StringBuilder testOrderInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`test_orders`\r\n(`testOrderID`,\r\n`testTypeID`,\r\n`testBatchID`)\r\nVALUES\r\n");
             StringBuilder testResultInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`test_results`\r\n(`testOrderID`,\r\n`result`,\r\n`dateOfTest`)\r\nVALUES\r\n");
 
             bool firstInsertInserted = false;
@@ -129,43 +130,43 @@ namespace MedLab.Model
 
                 foreach (TestBatch batch in patient.TestBatches)
                 {
+                    // find who did test
+                    int techId = -1;
+                    bool batchMatched = false;
+                    foreach (Laboratory lab in laboratories)
+                    {
+                        if (batchMatched)
+                            break;
+                        foreach (Technician tech in lab.Technicians)
+                        {
+                            if (batchMatched)
+                                break;
+                            foreach (TestBatch techBatch in tech.TestBatches)
+                            {
+                                if (techBatch.TestBatchID == batch.TestBatchID)
+                                {
+                                    techId = tech.TechnicianID;
+                                    batchMatched = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                     if (!firstBatch)
                     {
                         testBatchesInsert.Append(",\r\n");
                     }
-                    testBatchesInsert.Append($"({batch.TestBatchID}, '{batch.Status}', '{batch.DateOfCreation.ToString("yyyy-MM-dd HH:mm:ss")}', {patient.PatientID})");
+                    testBatchesInsert.Append($"({batch.TestBatchID}, '{batch.Status}', '{batch.DateOfCreation.ToString("yyyy-MM-dd HH:mm:ss")}', {patient.PatientID}, {techId})");
                     firstBatch = false;
 
                     foreach (TestOrder order in batch.TestOrders)
                     {
-                        // find who did test
-                        int techId = -1;
-                        bool orderMatched = false;
-                        foreach (Laboratory lab in laboratories)
-                        {
-                            if (orderMatched)
-                                break;
-                            foreach (Technician tech in lab.Technicians)
-                            {
-                                if (orderMatched)
-                                    break;
-                                foreach (TestOrder techOrder in tech.TestOrders)
-                                {
-                                    if (techOrder.TestOrderID == order.TestOrderID)
-                                    {
-                                        techId = tech.TechnicianID;
-                                        orderMatched = true;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-
+                    
                         if (!firstOrder)
                         {
                             testOrderInsert.Append(",\r\n");
                         }
-                        testOrderInsert.Append($"({order.TestOrderID}, {techId}, {order.TestType.TestTypeID}, {batch.TestBatchID})");
+                        testOrderInsert.Append($"({order.TestOrderID}, {order.TestType.TestTypeID}, {batch.TestBatchID})");
                         firstOrder = false;
 
                         if (order.TestResult == null)

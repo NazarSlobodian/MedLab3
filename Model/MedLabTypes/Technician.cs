@@ -12,6 +12,6 @@ namespace MedLab.Model.MedLabTypes
         public string FullName { get; set; }
         public string Email { get; set; }
         public string ContactNumber { get; set; }
-        public List<TestOrder> TestOrders { get; set; }
+        public List<TestBatch> TestBatches { get; set; }
     }
 }

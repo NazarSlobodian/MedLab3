@@ -87,7 +87,7 @@ namespace MedLab.ViewModel
         {
             try
             {
-                medLabDatabase.GenerateAndSqlize(
+                medLabDatabase.GenerateAndSqlizeExecute(
                     new GenerationAmounts(LabAmount, TechAmount, PatientAmount,
                     BatchesPerPatient, OrdersPerBatch),
                     false);
@@ -118,7 +118,7 @@ namespace MedLab.ViewModel
             ErrorPopupViewModel errorViewModel = new ErrorPopupViewModel(
                 proceedAction: () =>
                 {
-                    medLabDatabase.GenerateAndSqlize(
+                    medLabDatabase.GenerateAndSqlizeExecute(
                         new GenerationAmounts(LabAmount, TechAmount, PatientAmount,
                         BatchesPerPatient,OrdersPerBatch),
                         true);

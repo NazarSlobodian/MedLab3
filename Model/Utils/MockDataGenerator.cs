@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MedLab.Model.MedLabTypes;
 using MySql.Data.MySqlClient;
+using Mysqlx.Crud;
 
 namespace MedLab.Model.Utils
 {
@@ -170,7 +171,7 @@ namespace MedLab.Model.Utils
                         FullName = fullName,
                         Email = email,
                         ContactNumber = contactNumber,
-                        TestOrders = new List<TestOrder>()
+                        TestBatches = new List<TestBatch>()
                     });
                     techID++;
                     techniciansGenerated++;
@@ -217,7 +218,11 @@ namespace MedLab.Model.Utils
                 for (int i = 0; i < amountOfBatches; i++)
                 {
                     char status = randomDataGenerator.GenerateBatchStatus();
-                    DateTime timeOfCreation = randomDataGenerator.GenerateDateTime(new DateTime(2024, 9, 2), new DateTime(2024, 10, 1));
+                    DateTime openingDate = new DateTime(2024, 1, 1);
+                    DateTime start = patient.DateOfBirth < openingDate ? openingDate : patient.DateOfBirth.AddMonths(1);
+                    
+                    //DateTime timeOfCreation = randomDataGenerator.GenerateDateTime(new DateTime(2024, 9, 2), new DateTime(2024, 10, 1));
+                    DateTime timeOfCreation = randomDataGenerator.GenerateDateTime(start, DateTime.UtcNow);
                     patient.TestBatches.Add(new TestBatch()
                     {
                         TestBatchID = batchID,
@@ -233,6 +238,8 @@ namespace MedLab.Model.Utils
             {
                 foreach (TestBatch batch in patient.TestBatches)
                 {
+                    List<Technician> technicians = laboratories[random.Next(0, laboratories.Count)].Technicians;
+                    technicians[random.Next(0, technicians.Count)].TestBatches.Add(batch);
                     int amountOfTests = generatedAmount.ordersPerBatch;
                     int testTypeIndex = random.Next(1, testTypes.Count);
                     for (int testsAdded = 0; testsAdded < amountOfTests;)
@@ -263,7 +270,7 @@ namespace MedLab.Model.Utils
                                 .Find((x) =>
                                 (x.Gender == patient.Gender) && patientAge >= x.MinAge && patientAge <= x.MaxAge);
                             double testResult = randomDataGenerator.RandomTestResult(resultNormalValues.MinResValue, resultNormalValues.MaxResValue);
-                            DateTime dateOfTest = randomDataGenerator.GenerateDate(batch.DateOfCreation, DateTime.Now);
+                            DateTime dateOfTest = randomDataGenerator.GenerateDate(batch.DateOfCreation, batch.DateOfCreation.AddDays(testType.DaysTillOverdue));
                             result = new TestResult()
                             {
                                 TestResultID = orderID,
@@ -277,8 +284,7 @@ namespace MedLab.Model.Utils
                             TestType = testType,
                             TestResult = result
                         };
-                        List<Technician> technicians = laboratories[random.Next(0, laboratories.Count)].Technicians;
-                        technicians[random.Next(0, technicians.Count)].TestOrders.Add(order);
+                        
                         batch.TestOrders.Add(order);
                         orderID++;
                         testsAdded++;
