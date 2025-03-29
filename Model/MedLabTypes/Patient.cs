@@ -14,7 +14,6 @@ namespace MedLab.Model.MedLabTypes
         public DateTime DateOfBirth { get; set; }
         public string? Email { get; set; }
         public string? ContactNumber { get; set; }
-        public string? PatientPassword { get; set; }
         public List<TestBatch> TestBatches { get; set; }
     }
 }

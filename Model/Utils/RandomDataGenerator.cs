@@ -80,7 +80,14 @@ namespace MedLab.Model.Utils
             "Vlad",
             "Anastasia",
             "Katherine",
-            "Mike"
+            "Mike",
+            "Paul",
+            "Bob",
+            "Ted",
+            "Olivia",
+            "Maria",
+            "Alice",
+            "Rose"
         };
         private List<string> surnames = new List<string>()
         {
@@ -93,6 +100,10 @@ namespace MedLab.Model.Utils
             "Schrader",
             "Cruz",
             "Nguyen",
+            "Adams",
+            "Bailes",
+            "Danson",
+            "Carlson"
         };
 
         public string GeneratePhoneNumber()
@@ -163,23 +174,19 @@ namespace MedLab.Model.Utils
         {
             return (random.NextDouble() * (high-low)) + low;
         }
-        public char GenerateBatchStatus()
+        public string GenerateBatchStatus()
         {
             switch (random.Next(0, 3))
             {
                 case 0:
-                    return 'q';
+                    return "queued";
                 case 1:
-                    return 'p';
+                    return "processing";
                 case 2:
-                    return 's';
+                    return "done";
                 default:
-                    return '4';
+                    return "";
             }
-        }
-        public string GenerateMeasurementUnit()
-        {
-            return measurementUnits[random.Next(0, measurementUnits.Count)];
         }
         public string GenerateFullname()
         {
@@ -237,195 +244,8 @@ namespace MedLab.Model.Utils
                             MaxResValue = 14.7
                         }
                     }
-                },
-                new TestType()
-                {
-                    TestTypeID = 2,
-                    TestName = "Leukocytes",
-                    Cost = 120.0m,
-                    DaysTillOverdue = 5,
-                    MeasurementUnit = "cells/mcL",
-                    TestNormalValues = new List<TestNormalValues>()
-                    {
-                        new TestNormalValues()
-                        {
-                            TestNormalValuesID = 5,
-                            MinAge = 0,
-                            MaxAge = 45,
-                            Gender = 'm',
-                            MinResValue = 4.5,
-                            MaxResValue = 11.0
-                        },
-                        new TestNormalValues()
-                        {
-                            TestNormalValuesID = 6,
-                            MinAge = 0,
-                            MaxAge = 45,
-                            Gender = 'f',
-                            MinResValue = 4.5,
-                            MaxResValue = 11.0
-                        },
-                        new TestNormalValues()
-                        {
-                            TestNormalValuesID = 7,
-                            MinAge = 46,
-                            MaxAge = 100,
-                            Gender = 'm',
-                            MinResValue = 4.5,
-                            MaxResValue = 11.0
-                        },
-                        new TestNormalValues()
-                        {
-                            TestNormalValuesID = 8,
-                            MinAge = 46,
-                            MaxAge = 100,
-                            Gender = 'f',
-                            MinResValue = 4.5,
-                            MaxResValue = 11.0
-                        }
-                    }
-                },
-                new TestType()
-                {
-                    TestTypeID = 3,
-                    TestName = "Glucose",
-                    Cost = 110.0m,
-                    DaysTillOverdue = 5,
-                    MeasurementUnit = "mg/dL",
-                    TestNormalValues = new List<TestNormalValues>()
-                    {
-                        new TestNormalValues()
-                        {
-                            TestNormalValuesID = 9,
-                            MinAge = 0,
-                            MaxAge = 45,
-                            Gender = 'm',
-                            MinResValue = 70.0,
-                            MaxResValue = 100.0
-                        },
-                        new TestNormalValues()
-                        {
-                            TestNormalValuesID = 10,
-                            MinAge = 0,
-                            MaxAge = 45,
-                            Gender = 'f',
-                            MinResValue = 70.0,
-                            MaxResValue = 100.0
-                        },
-                        new TestNormalValues()
-                        {
-                            TestNormalValuesID = 11,
-                            MinAge = 46,
-                            MaxAge = 100,
-                            Gender = 'm',
-                            MinResValue = 70.0,
-                            MaxResValue = 100.0
-                        },
-                        new TestNormalValues()
-                        {
-                            TestNormalValuesID = 12,
-                            MinAge = 46,
-                            MaxAge = 100,
-                            Gender = 'f',
-                            MinResValue = 70.0,
-                            MaxResValue = 100.0
-                        }
-                    }
-                },
-                new TestType()
-                {
-                    TestTypeID = 4,
-                    TestName = "Createnine",
-                    Cost = 130.0m,
-                    DaysTillOverdue = 6,
-                    MeasurementUnit = "mg/dL",
-                    TestNormalValues = new List<TestNormalValues>()
-                    {
-                        new TestNormalValues()
-                        {
-                            TestNormalValuesID = 13,
-                            MinAge = 0,
-                            MaxAge = 45,
-                            Gender = 'm',
-                            MinResValue = 0.74,
-                            MaxResValue = 1.35
-                        },
-                        new TestNormalValues()
-                        {
-                            TestNormalValuesID = 14,
-                            MinAge = 0,
-                            MaxAge = 45,
-                            Gender = 'f',
-                            MinResValue = 0.59,
-                            MaxResValue = 1.04
-                        },
-                        new TestNormalValues()
-                        {
-                            TestNormalValuesID = 15,
-                            MinAge = 46,
-                            MaxAge = 100,
-                            Gender = 'm',
-                            MinResValue = 0.7,
-                            MaxResValue = 1.3
-                        },
-                        new TestNormalValues()
-                        {
-                            TestNormalValuesID = 16,
-                            MinAge = 46,
-                            MaxAge = 100,
-                            Gender = 'f',
-                            MinResValue = 0.55,
-                            MaxResValue = 1.0
-                        }
-                    }
-                },
-                new TestType()
-                {
-                    TestTypeID = 5,
-                    TestName = "Alanine Aminotransferase",
-                    Cost = 125.0m,
-                    DaysTillOverdue = 10,
-                    MeasurementUnit = "U/L",
-                    TestNormalValues = new List<TestNormalValues>()
-                    {
-                        new TestNormalValues()
-                        {
-                            TestNormalValuesID = 17,
-                            MinAge = 0,
-                            MaxAge = 45,
-                            Gender = 'm',
-                            MinResValue = 10.0,
-                            MaxResValue = 40.0
-                        },
-                        new TestNormalValues()
-                        {
-                        TestNormalValuesID = 18,
-                            MinAge = 0,
-                            MaxAge = 45,
-                            Gender = 'f',
-                            MinResValue = 7.0,
-                            MaxResValue = 35.0
-                        },
-                        new TestNormalValues()
-                        {
-                            TestNormalValuesID = 19,
-                            MinAge = 46,
-                            MaxAge = 100,
-                            Gender = 'm',
-                            MinResValue = 10.0,
-                            MaxResValue = 50.0
-                        },
-                        new TestNormalValues()
-                        {
-                            TestNormalValuesID = 20,
-                            MinAge = 46,
-                            MaxAge = 100,
-                            Gender = 'f',
-                            MinResValue = 7.0,
-                            MaxResValue = 45.0
-                        }
-                    }
                 }
+             
             };
             List<TestCollection> testCollections = new List<TestCollection>()
             {
@@ -437,16 +257,6 @@ namespace MedLab.Model.Utils
                     {
                         testTypes.Single( (x) => x.TestName == "Hemoglobin"),
                         testTypes.Single( (x) => x.TestName == "Leukocytes")
-                    }
-                },
-                new TestCollection()
-                {
-                    TestCollectionID = 2,
-                    TestCollectionName = "Basic Metabolic Panel",
-                    TestTypes = new List<TestType>()
-                    {
-                        testTypes.Single( (x) => x.TestName == "Glucose"),
-                        testTypes.Single( (x) => x.TestName == "Createnine")
                     }
                 }
             };

@@ -25,20 +25,21 @@ namespace MedLab.Model
         }
         public string Sqlize(bool skipTestTypeData)
         {
-            StringBuilder testCollectionsInsert = new StringBuilder("INSERT INTO `medlab`.`test_collections` (`testCollectionID`, `collectionName`)\r\nVALUES\r\n");
-            StringBuilder testTypesInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`test_types` (`testTypeID`, `testName`, `cost`, `daysTillOverdue`, `measurementsUnit`)\r\nVALUES\r\n");
+            string dbName = "wv1";
+            StringBuilder testCollectionsInsert = new StringBuilder($"INSERT INTO `{dbName}`.`test_collections` (`testCollectionID`, `collectionName`)\r\nVALUES\r\n");
+            StringBuilder testTypesInsert = new StringBuilder($";\r\nINSERT INTO `{dbName}`.`test_types` (`testTypeID`, `testName`, `cost`, `daysTillOverdue`, `measurementsUnit`)\r\nVALUES\r\n");
 
-            StringBuilder includedTestsInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`included_tests_for_collection` (`testCollectionID`, `testTypeID`)\r\nVALUES\r\n");
+            StringBuilder includedTestsInsert = new StringBuilder($";\r\nINSERT INTO `{dbName}`.`included_tests_for_collection` (`testCollectionID`, `testTypeID`)\r\nVALUES\r\n");
 
-            StringBuilder testNormalValuesInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`test_normal_values` (`testTypeID`, `minAge`, `maxAge`, `gender`, `minResValue`, `maxResValue`)\r\nVALUES\r\n");
+            StringBuilder testNormalValuesInsert = new StringBuilder($";\r\nINSERT INTO `{dbName}`.`test_normal_values` (`testTypeID`, `minAge`, `maxAge`, `gender`, `minResValue`, `maxResValue`)\r\nVALUES\r\n");
 
-            StringBuilder labsInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`laboratories` (`laboratoryID`, `address`, `email`, `contactNumber`)\r\nVALUES\r\n");
-            StringBuilder techsInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`technicians` (`technicianID`, `fullName`, `email`, `contactNumber`, `laboratoryID`)\r\nVALUES\r\n");
+            StringBuilder labsInsert = new StringBuilder($";\r\nINSERT INTO `{dbName}`.`laboratories` (`laboratoryID`, `address`, `email`, `contactNumber`)\r\nVALUES\r\n");
+            StringBuilder techsInsert = new StringBuilder($";\r\nINSERT INTO `{dbName}`.`technicians` (`technicianID`, `fullName`, `email`, `contactNumber`, `laboratoryID`)\r\nVALUES\r\n");
 
-            StringBuilder patientsInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`patients`\r\n(`patientID`,\r\n`fullName`,\r\n`gender`,\r\n`dateOfBirth`,\r\n`email`,\r\n`contactNumber`,\r\n`patientPassword`)\r\nVALUES\r\n");
-            StringBuilder testBatchesInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`test_batches`\r\n(`testBatchID`,\r\n`batchStatus`,\r\n`dateOfCreation`,\r\n`patientID`,\r\n`technicianID`)\r\nVALUES\r\n");
-            StringBuilder testOrderInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`test_orders`\r\n(`testOrderID`,\r\n`testTypeID`,\r\n`testBatchID`)\r\nVALUES\r\n");
-            StringBuilder testResultInsert = new StringBuilder(";\r\nINSERT INTO `medlab`.`test_results`\r\n(`testOrderID`,\r\n`result`,\r\n`dateOfTest`)\r\nVALUES\r\n");
+            StringBuilder patientsInsert = new StringBuilder($";\r\nINSERT INTO `{dbName}`.`patients`\r\n(`patientID`,\r\n`fullName`,\r\n`gender`,\r\n`dateOfBirth`,\r\n`email`,\r\n`contactNumber`)\r\nVALUES\r\n");
+            StringBuilder testBatchesInsert = new StringBuilder($";\r\nINSERT INTO `{dbName}`.`test_batches`\r\n(`testBatchID`,\r\n`batchStatus`,\r\n`dateOfCreation`,\r\n`patientID`,\r\n`technicianID`)\r\nVALUES\r\n");
+            StringBuilder testOrderInsert = new StringBuilder($";\r\nINSERT INTO `{dbName}`.`test_orders`\r\n(`testOrderID`,\r\n`testTypeID`,\r\n`testBatchID`)\r\nVALUES\r\n");
+            StringBuilder testResultInsert = new StringBuilder($";\r\nINSERT INTO `{dbName}`.`test_results`\r\n(`testOrderID`,\r\n`result`,\r\n`dateOfTest`)\r\nVALUES\r\n");
 
             bool firstInsertInserted = false;
 
@@ -125,7 +126,7 @@ namespace MedLab.Model
                 {
                     patientsInsert.Append(",\r\n");
                 }
-                patientsInsert.Append($"({patient.PatientID}, '{patient.FullName}', '{patient.Gender}', '{patient.DateOfBirth.ToString("yyyy-MM-dd")}', '{patient.Email}', '{patient.ContactNumber}', '{patient.PatientPassword}')");
+                patientsInsert.Append($"({patient.PatientID}, '{patient.FullName}', '{patient.Gender}', '{patient.DateOfBirth.ToString("yyyy-MM-dd")}', '{patient.Email}', '{patient.ContactNumber}')");
                 firstPatient = false;
 
                 foreach (TestBatch batch in patient.TestBatches)

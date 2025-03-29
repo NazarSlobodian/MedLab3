@@ -15,33 +15,34 @@ namespace MedLab.Model.Utils
     {
         public MedLabData GenerateData(GenerationAmounts generatedAmount, bool validTestTypes)
         {
+            string dbName = "lab8db";
             string str = ConfigurationManager.ConnectionStrings["connectionString"].ToString();
             MySqlConnection connection = new MySqlConnection(str);
 
             MySqlCommand cmdLabs = new MySqlCommand(
                 "SELECT AUTO_INCREMENT" +
                 " FROM information_schema.TABLES" +
-                " WHERE TABLE_SCHEMA = \"medlab\"" +
+                $" WHERE TABLE_SCHEMA = \"{dbName}\"" +
                 " AND TABLE_NAME = \"laboratories\"", connection);
             MySqlCommand cmdTechs = new MySqlCommand(
                 "SELECT AUTO_INCREMENT" +
                 " FROM information_schema.TABLES" +
-                " WHERE TABLE_SCHEMA = \"medlab\"" +
+                $" WHERE TABLE_SCHEMA = \"{dbName}\"" +
                 " AND TABLE_NAME = \"technicians\"", connection);
             MySqlCommand cmdPatients = new MySqlCommand(
                 "SELECT AUTO_INCREMENT" +
                 " FROM information_schema.TABLES" +
-                " WHERE TABLE_SCHEMA = \"medlab\"" +
+                $" WHERE TABLE_SCHEMA = \"{dbName}\"" +
                 " AND TABLE_NAME = \"patients\"", connection);
             MySqlCommand cmdBatches = new MySqlCommand(
                 "SELECT AUTO_INCREMENT" +
                 " FROM information_schema.TABLES" +
-                " WHERE TABLE_SCHEMA = \"medlab\"" +
+                $" WHERE TABLE_SCHEMA = \"{dbName}\"" +
                 " AND TABLE_NAME = \"test_batches\"", connection);
             MySqlCommand cmdOrders = new MySqlCommand(
                 "SELECT AUTO_INCREMENT" +
                 " FROM information_schema.TABLES" +
-                " WHERE TABLE_SCHEMA = \"medlab\"" +
+                $" WHERE TABLE_SCHEMA = \"{dbName}\"" +
                 " AND TABLE_NAME = \"test_orders\"", connection);
             //MySqlCommand cmdResults = new MySqlCommand(
             //    "SELECT AUTO_INCREMENT" +
@@ -51,7 +52,7 @@ namespace MedLab.Model.Utils
             MySqlCommand cmdType = new MySqlCommand(
                 "SELECT AUTO_INCREMENT" +
                 " FROM information_schema.TABLES" +
-                " WHERE TABLE_SCHEMA = \"medlab\"" +
+                $" WHERE TABLE_SCHEMA = \"{dbName}\"" +
                 " AND TABLE_NAME = \"test_types\"", connection);
             //MySqlCommand cmdNormal = new MySqlCommand(
             //    "SELECT AUTO_INCREMENT" +
@@ -205,7 +206,6 @@ namespace MedLab.Model.Utils
                     DateOfBirth = dateOfBirth,
                     Email = email,
                     ContactNumber = contactNumber,
-                    PatientPassword = password,
                     TestBatches = new List<TestBatch>()
                 });
                 patientID++;
@@ -217,7 +217,7 @@ namespace MedLab.Model.Utils
                 int amountOfBatches = generatedAmount.batchesPerPatient;
                 for (int i = 0; i < amountOfBatches; i++)
                 {
-                    char status = randomDataGenerator.GenerateBatchStatus();
+                    string status = randomDataGenerator.GenerateBatchStatus();
                     DateTime openingDate = new DateTime(2024, 1, 1);
                     DateTime start = patient.DateOfBirth < openingDate ? openingDate : patient.DateOfBirth.AddMonths(1);
                     
@@ -262,7 +262,7 @@ namespace MedLab.Model.Utils
                             continue;
                         }
                         TestResult result = null;
-                        if (batch.Status != 'q')
+                        if (batch.Status != "queued")
                         {
                             int patientAge = (int)(DateTime.Now - patient.DateOfBirth).TotalDays / 365;
                             TestNormalValues resultNormalValues = testTypes
