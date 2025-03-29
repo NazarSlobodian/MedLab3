@@ -86,7 +86,7 @@ namespace MedLab.Model
                     {
                         testTypesInsert.Append(",\r\n");
                     }
-                    testTypesInsert.Append($"({type.TestTypeID}, '{type.TestName}', {Math.Round(type.Cost, 2).ToString("F2", CultureInfo.InvariantCulture)}, {type.DaysTillOverdue}, '{type.MeasurementUnit}')");
+                    testTypesInsert.Append($"({type.TestTypeID}, '{type.TestName}', {Math.Round(type.Cost, 2).ToString("F2", CultureInfo.InvariantCulture)}, '{type.MeasurementUnit}')");
                     firstTestType = false;
 
                     foreach (TestNormalValues normal in type.TestNormalValues)

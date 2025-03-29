@@ -270,7 +270,7 @@ namespace MedLab.Model.Utils
                                 .Find((x) =>
                                 (x.Gender == patient.Gender) && patientAge >= x.MinAge && patientAge <= x.MaxAge);
                             double testResult = randomDataGenerator.RandomTestResult(resultNormalValues.MinResValue, resultNormalValues.MaxResValue);
-                            DateTime dateOfTest = randomDataGenerator.GenerateDate(batch.DateOfCreation, batch.DateOfCreation.AddDays(testType.DaysTillOverdue));
+                            DateTime dateOfTest = randomDataGenerator.GenerateDate(batch.DateOfCreation, batch.DateOfCreation.AddDays(5));
                             result = new TestResult()
                             {
                                 TestResultID = orderID,

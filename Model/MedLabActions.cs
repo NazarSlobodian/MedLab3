@@ -58,9 +58,9 @@ namespace MedLab.Model
             string str = ConfigurationManager.ConnectionStrings["connectionString"].ToString();
             MySqlConnection connection = new MySqlConnection(str);
             MySqlCommand cmd = new MySqlCommand(statement, connection);
-            connection.Open();
-            cmd.ExecuteNonQuery();
-            connection.Close();
+            //connection.Open();
+            //cmd.ExecuteNonQuery();
+            //connection.Close();
         }
     }
 }

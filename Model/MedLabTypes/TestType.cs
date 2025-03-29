@@ -11,7 +11,6 @@ namespace MedLab.Model.MedLabTypes
         public int TestTypeID { get; set; }
         public string TestName { get; set; }
         public decimal Cost { get; set; }
-        public int DaysTillOverdue { get; set; }
         public string MeasurementUnit { get; set; }
         public List<TestNormalValues> TestNormalValues { get; set; }
     }

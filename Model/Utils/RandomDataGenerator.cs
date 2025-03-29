@@ -196,57 +196,7 @@ namespace MedLab.Model.Utils
         }
         public (List<TestType>, List<TestCollection>) GetTestTypes()
         {
-            List<TestType> testTypes = new List<TestType>()
-            {
-                new TestType()
-                {
-                    TestTypeID = 1,
-                    TestName = "Hemoglobin",
-                    Cost = 100.0m,
-                    DaysTillOverdue = 7,
-                    MeasurementUnit = "g/dL",
-                    TestNormalValues = new List<TestNormalValues>()
-                    {
-                        new TestNormalValues()
-                        {
-                            TestNormalValuesID = 1,
-                            MinAge = 0,
-                            MaxAge = 45,
-                            Gender = 'm',
-                            MinResValue = 13.8,
-                            MaxResValue = 17.2
-                        },
-                        new TestNormalValues()
-                        {
-                            TestNormalValuesID = 2,
-                            MinAge = 0,
-                            MaxAge = 45,
-                            Gender = 'f',
-                            MinResValue = 12.1,
-                            MaxResValue = 15.1
-                        },
-                        new TestNormalValues()
-                        {
-                            TestNormalValuesID = 3,
-                            MinAge = 46,
-                            MaxAge = 100,
-                            Gender = 'm',
-                            MinResValue = 12.9,
-                            MaxResValue = 16.1
-                        },
-                        new TestNormalValues()
-                        {
-                            TestNormalValuesID = 4,
-                            MinAge = 46,
-                            MaxAge = 100,
-                            Gender = 'f',
-                            MinResValue = 11.7,
-                            MaxResValue = 14.7
-                        }
-                    }
-                }
-             
-            };
+            List<TestType> testTypes = Reader.GetTestTypes();
             List<TestCollection> testCollections = new List<TestCollection>()
             {
                 new TestCollection()
