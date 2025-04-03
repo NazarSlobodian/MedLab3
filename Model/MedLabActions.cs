@@ -32,16 +32,20 @@ namespace MedLab.Model
             StringBuilder sb = new StringBuilder();
             sb.Append("SET FOREIGN_KEY_CHECKS = 0;\r\n");
 
+            sb.Append("TRUNCATE TABLE collection_points;\r\n");
+            sb.Append("TRUNCATE TABLE lab_workers;\r\n");
             sb.Append("TRUNCATE TABLE laboratories;\r\n");
-            sb.Append("TRUNCATE TABLE technicians;\r\n");
-            sb.Append("TRUNCATE TABLE test_orders;\r\n");
-            sb.Append("TRUNCATE TABLE test_results;\r\n");
-            sb.Append("TRUNCATE TABLE test_batches;\r\n");
             sb.Append("TRUNCATE TABLE patients;\r\n");
-            sb.Append("TRUNCATE TABLE test_types;\r\n");
+            sb.Append("TRUNCATE TABLE receptionists;\r\n");
+            sb.Append("TRUNCATE TABLE test_batches;\r\n");
             sb.Append("TRUNCATE TABLE test_normal_values;\r\n");
-            sb.Append("TRUNCATE TABLE test_collections;\r\n");
-            sb.Append("TRUNCATE TABLE included_tests_for_collection;\r\n");
+            sb.Append("TRUNCATE TABLE test_orders;\r\n");
+            sb.Append("TRUNCATE TABLE test_panels;\r\n");
+            sb.Append("TRUNCATE TABLE test_panels_contents;\r\n");
+            sb.Append("TRUNCATE TABLE test_performers;\r\n");
+            sb.Append("TRUNCATE TABLE test_results;\r\n");
+            sb.Append("TRUNCATE TABLE test_types;\r\n");
+            sb.Append("TRUNCATE TABLE users;\r\n");
 
             sb.Append("SET FOREIGN_KEY_CHECKS = 1;\r\n");
 
