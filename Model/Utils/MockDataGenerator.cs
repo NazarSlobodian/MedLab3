@@ -87,7 +87,7 @@ namespace MedLab.Model.Utils
             RandomDataGenerator randomDataGenerator = new RandomDataGenerator();
 
             List<TestType> testTypes = new List<TestType>();
-            List<TestCollection> testCollection = new List<TestCollection>();
+            List<TestPanel> testCollection = new List<TestPanel>();
             
             if (typeID != 1 && !validTestTypes)
             {

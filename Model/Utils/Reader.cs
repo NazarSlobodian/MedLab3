@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace MedLab.Model.Utils
 {
@@ -69,6 +70,58 @@ namespace MedLab.Model.Utils
                 }
             }
             return testNormalValues;
+        }
+        public static List<TestPanel> GetTestPanels()
+        {
+            string filePath = "panels.txt";
+            List<TestPanel> testPanels = new List<TestPanel>();
+
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+
+                    string[] parts = line.Split(", ");
+
+                    if (parts.Length != 2)
+                        throw new Exception("Wrong format");
+                    TestPanel testPanel = new TestPanel
+                    {
+                        TestPanelID = int.Parse(parts[0]),
+                        Name = parts[1]
+                    };
+                    testPanels.Add(testPanel);
+                }
+            }
+            return testPanels;
+        }
+        public static List<TestPanelContentItem> GetContentItems()
+        {
+            string filePath = "panelContents.txt";
+            List<TestPanelContentItem> testPanelContents = new List<TestPanelContentItem>();
+
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+
+                    string[] parts = line.Split(" ");
+
+                    if (parts.Length != 2)
+                        throw new Exception("Wrong format");
+                    TestPanelContentItem content = new TestPanelContentItem
+                    {
+                        PanelID = int.Parse(parts[0]),
+                        TestTypeID = int.Parse(parts[1])
+                    };
+                    testPanelContents.Add(content);
+                }
+            }
+            return testPanelContents;
         }
     }
 }

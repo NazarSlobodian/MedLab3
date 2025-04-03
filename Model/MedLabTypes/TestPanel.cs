@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace MedLab.Model.MedLabTypes
 {
-    public class TestCollection
+    public class TestPanel
     {
-        public int TestCollectionID { get; set; }
-        public string TestCollectionName { get; set; }
+        public int TestPanelID { get; set; }
+        public string Name { get; set; }
         public List<TestType> TestTypes {  get; set; }  
     }
 }

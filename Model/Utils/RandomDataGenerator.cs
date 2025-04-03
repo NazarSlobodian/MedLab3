@@ -194,15 +194,15 @@ namespace MedLab.Model.Utils
             string surname = surnames[random.Next(0, surnames.Count)];
             return $"{name} {surname}";
         }
-        public (List<TestType>, List<TestCollection>) GetTestTypes()
+        public (List<TestType>, List<TestPanel>) GetTestTypes()
         {
             List<TestType> testTypes = Reader.GetTestTypes();
-            List<TestCollection> testCollections = new List<TestCollection>()
+            List<TestPanel> testCollections = new List<TestPanel>()
             {
-                new TestCollection()
+                new TestPanel()
                 {
-                    TestCollectionID = 1,
-                    TestCollectionName = "Complete Blood Count Panel",
+                    TestPanelID = 1,
+                    Name = "Complete Blood Count Panel",
                     TestTypes = new List<TestType>()
                     {
                         testTypes.Single( (x) => x.TestName == "Hemoglobin"),

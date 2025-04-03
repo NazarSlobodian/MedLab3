@@ -15,8 +15,8 @@ namespace MedLab.Model
         private List<Patient> patients;
         private List<Laboratory> laboratories;
         private List<TestType> testTypes;
-        private List<TestCollection> testCollections;
-        public MedLabData(List<Patient> patients, List<Laboratory> laboratory, List<TestType> testTypes, List<TestCollection> testCollections)
+        private List<TestPanel> testCollections;
+        public MedLabData(List<Patient> patients, List<Laboratory> laboratory, List<TestType> testTypes, List<TestPanel> testCollections)
         {
             this.patients = patients;
             this.laboratories = laboratory;
@@ -60,13 +60,13 @@ namespace MedLab.Model
 
             if (!skipTestTypeData)
             {
-                foreach (TestCollection testCollection in testCollections)
+                foreach (TestPanel testCollection in testCollections)
                 {
                     if (!firstTestCollection)
                     {
                         testCollectionsInsert.Append(",\r\n");
                     }
-                    testCollectionsInsert.Append($"({testCollection.TestCollectionID}, '{testCollection.TestCollectionName}')");
+                    testCollectionsInsert.Append($"({testCollection.TestPanelID}, '{testCollection.Name}')");
                     firstTestCollection = false;
 
                     foreach (TestType testType in testCollection.TestTypes)
@@ -75,7 +75,7 @@ namespace MedLab.Model
                         {
                             includedTestsInsert.Append(",\r\n");
                         }
-                        includedTestsInsert.Append($"({testCollection.TestCollectionID}, {testType.TestTypeID})");
+                        includedTestsInsert.Append($"({testCollection.TestPanelID}, {testType.TestTypeID})");
                         firstIncludedTests = false;
                     }
                 }
