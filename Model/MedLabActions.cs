@@ -14,18 +14,10 @@ namespace MedLab.Model
     public class MedLabActions
     {
         MockDataGenerator databaseGenerator = new MockDataGenerator();
-        public void GenerateAndSqlizeInFile(GenerationAmounts generatedAmount, bool validTestTypes)
+        public void GenerateAndInsert(GenerationAmounts generatedAmount, bool validTestTypes)
         {
-            string statement = GenerateAndSqlize(generatedAmount, validTestTypes);
-            string exeDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            string filePath = Path.Combine(exeDirectory, "InsertSample.txt");
-            File.WriteAllText(filePath, statement);
-        }
-        public void GenerateAndSqlizeExecute(GenerationAmounts generatedAmount, bool validTestTypes)
-        {
-            string statement = GenerateAndSqlize(generatedAmount, validTestTypes);
-            string exeDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            Execute(statement);
+            MedLabData data = databaseGenerator.GenerateData(generatedAmount, validTestTypes);
+            data.Insert();
         }
         public void TruncateAll()
         {
@@ -51,20 +43,14 @@ namespace MedLab.Model
 
             Execute(sb.ToString());
         }
-        private string GenerateAndSqlize(GenerationAmounts generatedAmount, bool validTestTypes)
-        {
-            MedLabData data = databaseGenerator.GenerateData(generatedAmount, validTestTypes);
-            string statement = data.Sqlize(validTestTypes);
-            return statement;
-        }
         private void Execute(string statement)
         {
             string str = ConfigurationManager.ConnectionStrings["connectionString"].ToString();
             MySqlConnection connection = new MySqlConnection(str);
             MySqlCommand cmd = new MySqlCommand(statement, connection);
-            //connection.Open();
-            //cmd.ExecuteNonQuery();
-            //connection.Close();
+            connection.Open();
+            cmd.ExecuteNonQuery();
+            connection.Close();
         }
     }
 }

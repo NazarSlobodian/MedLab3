@@ -8,16 +8,16 @@ namespace MedLab.Model.Utils
 {
     public struct GenerationAmounts
     {
-        public int labAmount;
-        public int techAmount;
+        public int collectionPointAmount;
+        public int receptionistsAmount;
         public int patientAmount;
         public int batchesPerPatient;
         public int ordersPerBatch;
-        public GenerationAmounts(int labAmount, int techAmount, int patientAmount,
+        public GenerationAmounts(int collectionPointAmount, int receptionistsAmount, int patientAmount,
             int batchesPerPatient, int ordersPerBatch)
         {
-            this.labAmount = labAmount;
-            this.techAmount = techAmount;
+            this.collectionPointAmount = collectionPointAmount;
+            this.receptionistsAmount = receptionistsAmount;
             this.patientAmount = patientAmount;
             this.batchesPerPatient = batchesPerPatient;
             this.ordersPerBatch = ordersPerBatch;

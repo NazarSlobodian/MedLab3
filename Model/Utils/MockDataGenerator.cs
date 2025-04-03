@@ -5,9 +5,10 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MedLab.Model.MedLabTypes;
+using MedLab.Model.DbModels;
 using MySql.Data.MySqlClient;
 using Mysqlx.Crud;
+using MySqlX.XDevAPI;
 
 namespace MedLab.Model.Utils
 {
@@ -19,16 +20,16 @@ namespace MedLab.Model.Utils
             string str = ConfigurationManager.ConnectionStrings["connectionString"].ToString();
             MySqlConnection connection = new MySqlConnection(str);
 
-            MySqlCommand cmdLabs = new MySqlCommand(
+            MySqlCommand cmdCollectionPoints = new MySqlCommand(
                 "SELECT AUTO_INCREMENT" +
                 " FROM information_schema.TABLES" +
                 $" WHERE TABLE_SCHEMA = \"{dbName}\"" +
-                " AND TABLE_NAME = \"laboratories\"", connection);
-            MySqlCommand cmdTechs = new MySqlCommand(
+                " AND TABLE_NAME = \"collection_points\"", connection);
+            MySqlCommand cmdReceptionists = new MySqlCommand(
                 "SELECT AUTO_INCREMENT" +
                 " FROM information_schema.TABLES" +
                 $" WHERE TABLE_SCHEMA = \"{dbName}\"" +
-                " AND TABLE_NAME = \"technicians\"", connection);
+                " AND TABLE_NAME = \"receptionists\"", connection);
             MySqlCommand cmdPatients = new MySqlCommand(
                 "SELECT AUTO_INCREMENT" +
                 " FROM information_schema.TABLES" +
@@ -44,31 +45,18 @@ namespace MedLab.Model.Utils
                 " FROM information_schema.TABLES" +
                 $" WHERE TABLE_SCHEMA = \"{dbName}\"" +
                 " AND TABLE_NAME = \"test_orders\"", connection);
-            //MySqlCommand cmdResults = new MySqlCommand(
-            //    "SELECT AUTO_INCREMENT" +
-            //    " FROM information_schema.TABLES" +
-            //    " WHERE TABLE_SCHEMA = \"medlab\"" +
-            //    " AND TABLE_NAME = \"test_results\"", connection);
             MySqlCommand cmdType = new MySqlCommand(
                 "SELECT AUTO_INCREMENT" +
                 " FROM information_schema.TABLES" +
                 $" WHERE TABLE_SCHEMA = \"{dbName}\"" +
                 " AND TABLE_NAME = \"test_types\"", connection);
-            //MySqlCommand cmdNormal = new MySqlCommand(
-            //    "SELECT AUTO_INCREMENT" +
-            //    " FROM information_schema.TABLES" +
-            //    " WHERE TABLE_SCHEMA = \"medlab\"" +
-            //    " AND TABLE_NAME = \"test_normal_values\"", connection);
-            //MySqlCommand cmdTestCollection = new MySqlCommand(
-            //    "SELECT AUTO_INCREMENT" +
-            //    " FROM information_schema.TABLES" +
-            //    " WHERE TABLE_SCHEMA = \"medlab\"" +
-            //    " AND TABLE_NAME = \"test_collections\"", connection);
+
+
             connection.Open();
-            object cmdResult = cmdLabs.ExecuteScalar();
-            int labID = (cmdResult != DBNull.Value && cmdResult != null) ? Convert.ToInt32(cmdResult) : 1;
-            cmdResult = cmdTechs.ExecuteScalar();
-            int techID = (cmdResult != DBNull.Value && cmdResult != null) ? Convert.ToInt32(cmdResult) : 1;
+            object cmdResult = cmdCollectionPoints.ExecuteScalar();
+            int collectionPointId = (cmdResult != DBNull.Value && cmdResult != null) ? Convert.ToInt32(cmdResult) : 1;
+            cmdResult = cmdReceptionists.ExecuteScalar();
+            int receptionistsID = (cmdResult != DBNull.Value && cmdResult != null) ? Convert.ToInt32(cmdResult) : 1;
             cmdResult = cmdPatients.ExecuteScalar();
             int patientID = (cmdResult != DBNull.Value && cmdResult != null) ? Convert.ToInt32(cmdResult) : 1;
             cmdResult = cmdBatches.ExecuteScalar();
@@ -78,10 +66,7 @@ namespace MedLab.Model.Utils
 
             cmdResult = cmdType.ExecuteScalar();
             int typeID = (cmdResult != DBNull.Value && cmdResult != null) ? Convert.ToInt32(cmdResult) : 1;
-            //int resultID = Convert.ToInt32(cmdResults.ExecuteScalar());
-            //int typeID = Convert.ToInt32(cmdType.ExecuteScalar());
-            //int normalID = Convert.ToInt32(cmdNormal.ExecuteScalar());
-            //int testCollectionID = Convert.ToInt32(cmdTestCollection.ExecuteScalar());
+
             connection.Close();
 
             RandomDataGenerator randomDataGenerator = new RandomDataGenerator();
@@ -97,66 +82,66 @@ namespace MedLab.Model.Utils
             (testTypes, testCollection) = randomDataGenerator.GetTestTypes();
 
             Random random = new Random();
-            //labs
-            int amountOfLabs = generatedAmount.labAmount;
-            List<Laboratory> laboratories = new List<Laboratory>();
-            for (int labsGenerated = 0; labsGenerated < amountOfLabs;)
+            //collectionPoints
+            int amountOfCollectionPoints = generatedAmount.collectionPointAmount;
+            List<CollectionPoint> collectionPoints = new List<CollectionPoint>();
+            for (int collectionPointsGenerated = 0; collectionPointsGenerated < amountOfCollectionPoints;)
             {
                 string email = randomDataGenerator.GenerateEmail();
                 string contactNumber = randomDataGenerator.GeneratePhoneNumber();
                 string address = randomDataGenerator.GenerateAddress();
-                bool validLabValues = true;
-                for (int i = 0; i < laboratories.Count; i++)
+                bool validCollectionPointValues = true;
+                for (int i = 0; i < collectionPoints.Count; i++)
                 {
-                    if (email == laboratories[i].Email)
+                    if (email == collectionPoints[i].Email)
                     {
-                        validLabValues = false;
+                        validCollectionPointValues = false;
                         break;
                     }
-                    if (contactNumber == laboratories[i].ContactNumber)
+                    if (contactNumber == collectionPoints[i].ContactNumber)
                     {
-                        validLabValues = false;
+                        validCollectionPointValues = false;
                         break;
                     }
-                    if (address == laboratories[i].Address)
+                    if (address == collectionPoints[i].Address)
                     {
-                        validLabValues = false;
+                        validCollectionPointValues = false;
                         break;
                     }
                 }
-                if (!validLabValues)
+                if (!validCollectionPointValues)
                 {
                     continue;
                 }
-                laboratories.Add(new Laboratory()
+                collectionPoints.Add(new CollectionPoint()
                 {
-                    LaboratoryID = labID,
+                    CollectionPointId = collectionPointId,
                     Address = address,
                     Email = email,
                     ContactNumber = contactNumber,
-                    Technicians = new List<Technician>()
+                    Receptionists = new List<Receptionist>()
                 });
-                labID++;
-                labsGenerated++;
+                collectionPointId++;
+                collectionPointsGenerated++;
             }
-            // techs for labs
-            for (int i = 0; i < laboratories.Count; i++)
+            // receptionists for collection points
+            for (int i = 0; i < collectionPoints.Count; i++)
             {
-                int amountOfTechnicians = generatedAmount.techAmount;
-                for (int techniciansGenerated = 0; techniciansGenerated < amountOfTechnicians;)
+                int amountOfReceptionists = generatedAmount.receptionistsAmount;
+                for (int receptionistsGenerated = 0; receptionistsGenerated < amountOfReceptionists;)
                 {
                     string fullName = randomDataGenerator.GenerateFullname();
                     string email = randomDataGenerator.GenerateEmail();
                     string contactNumber = randomDataGenerator.GeneratePhoneNumber();
                     bool validLabValues = true;
-                    for (int j = 0; j < laboratories[i].Technicians.Count; j++)
+                    for (int j = 0; j < collectionPoints[i].Receptionists.Count; j++)
                     {
-                        if (email == laboratories[i].Technicians[j].Email)
+                        if (email == collectionPoints[i].Receptionists.ElementAt(j).Email)
                         {
                             validLabValues = false;
                             break;
                         }
-                        if (contactNumber == laboratories[i].Technicians[j].ContactNumber)
+                        if (contactNumber == collectionPoints[i].Receptionists.ElementAt(j).ContactNumber)
                         {
                             validLabValues = false;
                             break;
@@ -166,16 +151,16 @@ namespace MedLab.Model.Utils
                     {
                         continue;
                     }
-                    laboratories[i].Technicians.Add(new Technician()
+                    collectionPoints[i].Receptionists.Add(new Receptionist()
                     {
-                        TechnicianID = techID,
+                        ReceptionistId = receptionistsID,
                         FullName = fullName,
                         Email = email,
                         ContactNumber = contactNumber,
                         TestBatches = new List<TestBatch>()
                     });
-                    techID++;
-                    techniciansGenerated++;
+                    receptionistsID++;
+                    receptionistsGenerated++;
                 }
             }
             //patients
@@ -184,7 +169,7 @@ namespace MedLab.Model.Utils
             for (int patientsGenerated = 0; patientsGenerated < patientAmount;)
             {
                 string fullName = randomDataGenerator.GenerateFullname();
-                char gender = randomDataGenerator.GenerateGender();
+                string gender = randomDataGenerator.GenerateGender();
                 DateTime dateOfBirth = randomDataGenerator.GenerateDate(new DateTime(1940, 1, 1), new DateTime(2024, 9, 1)).Date;
                 string email = null;
                 string contactNumber = null;
@@ -200,10 +185,10 @@ namespace MedLab.Model.Utils
 
                 patients.Add(new Patient()
                 {
-                    PatientID = patientID,
+                    PatientId = patientID,
                     FullName = fullName,
                     Gender = gender,
-                    DateOfBirth = dateOfBirth,
+                    DateOfBirth = DateOnly.FromDateTime(dateOfBirth),
                     Email = email,
                     ContactNumber = contactNumber,
                     TestBatches = new List<TestBatch>()
@@ -219,14 +204,14 @@ namespace MedLab.Model.Utils
                 {
                     string status = randomDataGenerator.GenerateBatchStatus();
                     DateTime openingDate = new DateTime(2024, 1, 1);
-                    DateTime start = patient.DateOfBirth < openingDate ? openingDate : patient.DateOfBirth.AddMonths(1);
+                    DateTime start = patient.DateOfBirth.ToDateTime(TimeOnly.Parse("00:00 AM")) < openingDate ? openingDate : patient.DateOfBirth.ToDateTime(TimeOnly.Parse("00:00 AM")).AddMonths(1);
                     
                     //DateTime timeOfCreation = randomDataGenerator.GenerateDateTime(new DateTime(2024, 9, 2), new DateTime(2024, 10, 1));
                     DateTime timeOfCreation = randomDataGenerator.GenerateDateTime(start, DateTime.UtcNow);
                     patient.TestBatches.Add(new TestBatch()
                     {
-                        TestBatchID = batchID,
-                        Status = status,
+                        TestBatchId = batchID,
+                        BatchStatus = status,
                         DateOfCreation = timeOfCreation,
                         TestOrders = new List<TestOrder>()
                     });
@@ -238,8 +223,8 @@ namespace MedLab.Model.Utils
             {
                 foreach (TestBatch batch in patient.TestBatches)
                 {
-                    List<Technician> technicians = laboratories[random.Next(0, laboratories.Count)].Technicians;
-                    technicians[random.Next(0, technicians.Count)].TestBatches.Add(batch);
+                    List<Receptionist> receptionists = collectionPoints[random.Next(0, collectionPoints.Count)].Receptionists.ToList();
+                    receptionists[random.Next(0, receptionists.Count)].TestBatches.Add(batch);
                     int amountOfTests = generatedAmount.ordersPerBatch;
                     int testTypeIndex = random.Next(1, testTypes.Count);
                     for (int testsAdded = 0; testsAdded < amountOfTests;)
@@ -248,7 +233,7 @@ namespace MedLab.Model.Utils
                         bool validLabValues = true;
                         for (int i = 0; i < batch.TestOrders.Count; i++)
                         {
-                            if (batch.TestOrders[i].TestType == testType)
+                            if (batch.TestOrders.ElementAt(i).TestType == testType)
                             {
                                 validLabValues = false;
                                 break;
@@ -262,25 +247,25 @@ namespace MedLab.Model.Utils
                             continue;
                         }
                         TestResult result = null;
-                        if (batch.Status != "queued")
+                        if (batch.BatchStatus != "queued")
                         {
-                            int patientAge = (int)(DateTime.Now - patient.DateOfBirth).TotalDays / 365;
-                            TestNormalValues resultNormalValues = testTypes
-                                .Find((x) => x == testType).TestNormalValues
+                            int patientAge = (int)(DateTime.Now - patient.DateOfBirth.ToDateTime(TimeOnly.Parse("00:00 AM"))).TotalDays / 365;
+                            TestNormalValue resultNormalValues = testTypes
+                                .Find((x) => x == testType).TestNormalValues.ToList()
                                 .Find((x) =>
                                 (x.Gender == patient.Gender) && patientAge >= x.MinAge && patientAge <= x.MaxAge);
-                            double testResult = randomDataGenerator.RandomTestResult(resultNormalValues.MinResValue, resultNormalValues.MaxResValue);
+                            double testResult = randomDataGenerator.RandomTestResult((double)resultNormalValues.MinResValue, (double)resultNormalValues.MaxResValue);
                             DateTime dateOfTest = randomDataGenerator.GenerateDate(batch.DateOfCreation, batch.DateOfCreation.AddDays(5));
                             result = new TestResult()
                             {
-                                TestResultID = orderID,
-                                Result = testResult,
-                                DateOfTest = dateOfTest
+                                TestOrderId = orderID,
+                                Result = (decimal)testResult,
+                                DateOfTest = DateOnly.FromDateTime(dateOfTest)
                             };
                         }
                         TestOrder order = new TestOrder()
                         {
-                            TestOrderID = orderID,
+                            TestOrderId = orderID,
                             TestType = testType,
                             TestResult = result
                         };
@@ -291,7 +276,7 @@ namespace MedLab.Model.Utils
                     }
                 }
             }
-            return new MedLabData(patients, laboratories, testTypes, testCollection);
+            return new MedLabData(patients, collectionPoints, testTypes, testCollection);
         }
     }
 }

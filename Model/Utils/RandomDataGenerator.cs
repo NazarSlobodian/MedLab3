@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Google.Protobuf.Reflection;
-using MedLab.Model.MedLabTypes;
+using MedLab.Model.DbModels;
 using MySql.Data.MySqlClient.Authentication;
 
 namespace MedLab.Model.Utils
@@ -152,13 +152,13 @@ namespace MedLab.Model.Utils
             TimeOnly randomTime = time.AddMinutes(random.Next(480, 1080));
             return randomTime;
         }
-        public char GenerateGender()
+        public string GenerateGender()
         {
             if (random.Next(0, 2) == 1)
             {
-                return 'm';
+                return "m";
             }
-            return 'f';
+            return "f";
         }
         public string GeneratePassword()
         {
@@ -201,12 +201,12 @@ namespace MedLab.Model.Utils
             {
                 new TestPanel()
                 {
-                    TestPanelID = 1,
+                    TestPanelId = 1,
                     Name = "Complete Blood Count Panel",
                     TestTypes = new List<TestType>()
                     {
-                        testTypes.Single( (x) => x.TestName == "Hemoglobin"),
-                        testTypes.Single( (x) => x.TestName == "Leukocytes")
+                        testTypes.Single( (x) => x.Name == "Hemoglobin"),
+                        testTypes.Single( (x) => x.Name == "Leukocytes")
                     }
                 }
             };
