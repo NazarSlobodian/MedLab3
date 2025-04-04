@@ -14,9 +14,9 @@ namespace MedLab.Model
     public class MedLabActions
     {
         MockDataGenerator databaseGenerator = new MockDataGenerator();
-        public void GenerateAndInsert(GenerationAmounts generatedAmount, bool validTestTypes)
+        public async void GenerateAndInsert(GenerationAmounts generatedAmount, bool validTestTypes)
         {
-            MedLabData data = databaseGenerator.GenerateData(generatedAmount, validTestTypes);
+            MedLabData data = await databaseGenerator.GenerateData(generatedAmount, validTestTypes);
             data.Insert();
         }
         public void TruncateAll()

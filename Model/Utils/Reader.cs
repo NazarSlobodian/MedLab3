@@ -32,7 +32,7 @@ namespace MedLab.Model.Utils
                     {
                         TestTypeId = int.Parse(parts[0]),
                         Name = parts[1],
-                        Cost = decimal.Parse(parts[2]),
+                        Cost = decimal.Parse(parts[2].Replace('.', ',')),
                         MeasurementsUnit = parts[3]
                     };
                     testTypes.Add(testType);
@@ -50,6 +50,7 @@ namespace MedLab.Model.Utils
             using (StreamReader reader = new StreamReader(filePath))
             {
                 string line;
+                int id = 1;
                 while ((line = reader.ReadLine()) != null)
                 {
                     if (string.IsNullOrWhiteSpace(line)) continue;
@@ -60,14 +61,16 @@ namespace MedLab.Model.Utils
                         throw new Exception("Wrong format");
                     TestNormalValue testNormalValue = new TestNormalValue
                     {
-                        TestNormalValueId = int.Parse(parts[0]),
+                        TestTypeId = int.Parse(parts[0]),
                         MinAge =int.Parse(parts[1]),
                         MaxAge = int.Parse(parts[2]),
                         Gender = parts[3],
                         MinResValue = decimal.Parse(parts[4]),
                         MaxResValue = decimal.Parse(parts[5]),
+                        TestNormalValueId = id,
                     };
                     testNormalValues.Add(testNormalValue);
+                    id++;
                 }
             }
             return testNormalValues;
@@ -86,12 +89,13 @@ namespace MedLab.Model.Utils
 
                     string[] parts = line.Split(", ");
 
-                    if (parts.Length != 2)
+                    if (parts.Length != 3)
                         throw new Exception("Wrong format");
                     TestPanel testPanel = new TestPanel
                     {
                         TestPanelId = int.Parse(parts[0]),
-                        Name = parts[1]
+                        Name = parts[1],
+                        Cost = decimal.Parse(parts[2].Replace('.',','))
                     };
                     testPanels.Add(testPanel);
                 }

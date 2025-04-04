@@ -15,17 +15,30 @@ namespace MedLab.Model
         private List<Patient> patients;
         private List<CollectionPoint> collectionPoints;
         private List<TestType> testTypes;
-        private List<TestPanel> testCollections;
-        public MedLabData(List<Patient> patients, List<CollectionPoint> laboratory, List<TestType> testTypes, List<TestPanel> testCollections)
+        private List<TestPanel> testPanels;
+        private bool newTypes;
+        public MedLabData(List<Patient> patients, List<CollectionPoint> collectionPoints, List<TestType> testTypes, List<TestPanel> testPanels, bool newTypes)
         {
             this.patients = patients;
-            this.collectionPoints = laboratory;
+            this.collectionPoints = collectionPoints;
             this.testTypes = testTypes;
-            this.testCollections = testCollections;
+            this.testPanels = testPanels;
+            this.newTypes = newTypes;
         }
         public void Insert()
         {
-
+            Wv1Context context = new Wv1Context();
+            if (newTypes)
+            {
+                context.TestTypes.AddRangeAsync(testTypes);
+                //foreach (TestType testType in context.TestTypes)
+                //{
+                //    testType.TestNormalValues = null;
+                //}
+                //context.CollectionPoints.AddRangeAsync(collectionPoints);
+                context.TestPanels.AddRangeAsync(testPanels);
+            }
+            context.SaveChanges();
         }
     }
 }

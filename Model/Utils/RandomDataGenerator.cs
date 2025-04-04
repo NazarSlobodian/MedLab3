@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Google.Protobuf.Reflection;
 using MedLab.Model.DbModels;
+using MedLab.Model.OtherModeld;
+using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient.Authentication;
 
 namespace MedLab.Model.Utils
@@ -172,7 +174,7 @@ namespace MedLab.Model.Utils
         }
         public double RandomTestResult(double low, double high)
         {
-            return (random.NextDouble() * (high-low)) + low;
+            return (random.NextDouble() * (high - low)) + low;
         }
         public string GenerateBatchStatus()
         {
@@ -194,23 +196,48 @@ namespace MedLab.Model.Utils
             string surname = surnames[random.Next(0, surnames.Count)];
             return $"{name} {surname}";
         }
-        public (List<TestType>, List<TestPanel>) GetTestTypes()
+        public static async Task<(List<TestType>, List<TestPanel>)> GetDbTestTypes()
+        {
+            Wv1Context context = new Wv1Context();
+            List<TestType> testTypes = await context.TestTypes.Include(x => x.TestNormalValues).ToListAsync();
+            List<TestPanel> testPanel = await context.TestPanels.Include(x => x.TestTypes).ToListAsync();
+            return (testTypes, testPanel);
+        }
+        public (List<TestType>, List<TestPanel>) GetDefaultTestTypes()
         {
             List<TestType> testTypes = Reader.GetTestTypes();
-            List<TestPanel> testCollections = new List<TestPanel>()
+            List<TestPanel> testPanels = Reader.GetTestPanels();
+            List<TestNormalValue> testNormalValues = Reader.GetTestNormalValues();
+            List<TestPanelContentItem> panelContents = Reader.GetContentItems();
+            for (int i = 0; i < panelContents.Count; i++)
             {
-                new TestPanel()
+                for (int j = 0; j < testPanels.Count; j++)
                 {
-                    TestPanelId = 1,
-                    Name = "Complete Blood Count Panel",
-                    TestTypes = new List<TestType>()
+                    if (testPanels[j].TestPanelId == panelContents[i].PanelId)
                     {
-                        testTypes.Single( (x) => x.Name == "Hemoglobin"),
-                        testTypes.Single( (x) => x.Name == "Leukocytes")
+                        for (int k = 0; k < testTypes.Count; k++)
+                        {
+                            if (panelContents[i].TestTypeId == testTypes[k].TestTypeId)
+                            {
+                                testPanels[j].TestTypes.Add(testTypes[k]);
+                            }
+                        }
                     }
                 }
-            };
-            return (testTypes, testCollections);
+            }
+            for (int i = 0; i < testTypes.Count; i++)
+            {
+                for (int j = 0; j < testNormalValues.Count; j++)
+                {
+                    if (testTypes[i].TestTypeId == testNormalValues[j].TestTypeId)
+                    {
+
+                        testTypes[i].TestNormalValues.Add(testNormalValues[j]);
+
+                    }
+                }
+            }
+            return (testTypes, testPanels);
         }
     }
 }

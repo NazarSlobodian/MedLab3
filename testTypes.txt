@@ -1,10 +1,10 @@
-1, Hematocrit, 100, %
-2, Hemoglobin, 120, mmol/L
-3, Leukocytes, 130, 10^9/L
-4, Lymphocytes, 200, %
-5, Phosphorus, 99, mmol/L
-6, Potassium, 50, mmol/L
-7, Red Blood Cell Count (RBC), 70, 10^1^2/L
-8, Sodium, 200, mmol/L
-9, Testosterone, 150, nmol/L
-10, Lactic acid, 143, mmol/L
+1, Hematocrit, 100.0, %
+2, Hemoglobin, 120.0, mmol/L
+3, Leukocytes, 130.0, 10^9/L
+4, Lymphocytes, 200.0, %
+5, Phosphorus, 99.0, mmol/L
+6, Potassium, 50.0, mmol/L
+7, Red Blood Cell Count (RBC), 70.0, 10^1^2/L
+8, Sodium, 200.0, mmol/L
+9, Testosterone, 150.0, nmol/L
+10, Lactic acid, 143.0, mmol/L
