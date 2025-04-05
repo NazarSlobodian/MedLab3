@@ -30,14 +30,16 @@ namespace MedLab.Model
             Wv1Context context = new Wv1Context();
             if (newTypes)
             {
-                context.TestTypes.AddRangeAsync(testTypes);
-                //foreach (TestType testType in context.TestTypes)
-                //{
-                //    testType.TestNormalValues = null;
-                //}
-                //context.CollectionPoints.AddRangeAsync(collectionPoints);
-                context.TestPanels.AddRangeAsync(testPanels);
+                context.TestTypes.AddRange(testTypes);
+                context.TestPanels.AddRange(testPanels);
             }
+            else
+            {
+                context.TestTypes.AttachRange(testTypes);
+                context.TestPanels.AttachRange(testPanels);
+            }
+            context.CollectionPoints.AddRange(collectionPoints);
+            context.Patients.AddRange(patients);
             context.SaveChanges();
         }
     }

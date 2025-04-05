@@ -163,7 +163,7 @@ public partial class Wv1Context : DbContext
 
             entity.HasIndex(e => e.CollectionPointId, "collectionPointID_idx");
 
-            entity.HasIndex(e => e.ContactNumber, "contectNumber_UNIQUE").IsUnique();
+            entity.HasIndex(e => e.ContactNumber, "contactNumber_UNIQUE").IsUnique();
 
             entity.HasIndex(e => e.Email, "email_UNIQUE").IsUnique();
 
@@ -171,7 +171,7 @@ public partial class Wv1Context : DbContext
             entity.Property(e => e.CollectionPointId).HasColumnName("collectionPointID");
             entity.Property(e => e.ContactNumber)
                 .HasMaxLength(15)
-                .HasColumnName("contectNumber");
+                .HasColumnName("contactNumber");
             entity.Property(e => e.Email)
                 .HasMaxLength(320)
                 .HasColumnName("email");
