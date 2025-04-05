@@ -183,7 +183,7 @@ namespace MedLab.Model.Utils
                 case 0:
                     return "queued";
                 case 1:
-                    return "processed";
+                    return "processing";
                 case 2:
                     return "done";
                 default:

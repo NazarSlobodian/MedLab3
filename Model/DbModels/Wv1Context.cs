@@ -199,9 +199,8 @@ public partial class Wv1Context : DbContext
 
             entity.Property(e => e.TestBatchId).HasColumnName("testBatchID");
             entity.Property(e => e.BatchStatus)
-                .HasMaxLength(1)
-                .HasDefaultValueSql("'q'")
-                .IsFixedLength()
+                .HasDefaultValueSql("'queued'")
+                .HasColumnType("enum('queued','processed','done')")
                 .HasColumnName("batchStatus");
             entity.Property(e => e.DateOfCreation)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -403,13 +402,9 @@ public partial class Wv1Context : DbContext
 
             entity.ToTable("users");
 
-            entity.HasIndex(e => e.Login, "login_UNIQUE").IsUnique();
-
-            entity.HasIndex(e => e.ReferencedId, "referencedID_UNIQUE").IsUnique();
-
             entity.Property(e => e.UserId).HasColumnName("userID");
             entity.Property(e => e.Hash)
-                .HasMaxLength(64)
+                .HasMaxLength(128)
                 .HasColumnName("hash");
             entity.Property(e => e.Login)
                 .HasMaxLength(320)

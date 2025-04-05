@@ -102,7 +102,20 @@ namespace MedLab.ViewModel
             }
         }
 
+        private bool isButtonEnabled = true;
 
+        public bool IsButtonEnabled
+        {
+            get => isButtonEnabled;
+            set
+            {
+                if (isButtonEnabled != value)
+                {
+                    isButtonEnabled = value;
+                    OnPropertyChanged(nameof(IsButtonEnabled));
+                }
+            }
+        }
         private void TruncateAll()
         {
             medLabDatabase.TruncateAll();

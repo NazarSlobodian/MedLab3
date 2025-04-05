@@ -28,6 +28,9 @@ namespace MedLab.Model.Utils
             int orderID = (await context.TestOrders.MaxAsync(e => (int?)e.TestOrderId) ?? 0) + 1;
 
             int typeID = (await context.TestTypes.MaxAsync(e => (int?)e.TestTypeId) ?? 0) + 1;
+
+            int userID = (await context.Users.MaxAsync(e => (int?)e.UserId) ?? 0) + 1;
+
             RandomDataGenerator randomDataGenerator = new RandomDataGenerator();
 
             List<TestType> testTypes = new List<TestType>();
@@ -133,19 +136,19 @@ namespace MedLab.Model.Utils
                 string contactNumber = randomDataGenerator.GeneratePhoneNumber();
                 string address = randomDataGenerator.GenerateAddress();
                 bool validLabValues = true;
-                for (int i = 0; i < collectionPoints.Count; i++)
+                for (int i = 0; i < labs.Count; i++)
                 {
-                    if (email == collectionPoints[i].Email)
+                    if (email == labs[i].Email)
                     {
                         validLabValues = false;
                         break;
                     }
-                    if (contactNumber == collectionPoints[i].ContactNumber)
+                    if (contactNumber == labs[i].ContactNumber)
                     {
                         validLabValues = false;
                         break;
                     }
-                    if (address == collectionPoints[i].Address)
+                    if (address == labs[i].Address)
                     {
                         validLabValues = false;
                         break;
@@ -176,14 +179,14 @@ namespace MedLab.Model.Utils
                     string email = randomDataGenerator.GenerateEmail();
                     string contactNumber = randomDataGenerator.GeneratePhoneNumber();
                     bool validWorkerValues = true;
-                    for (int j = 0; j < collectionPoints[i].Receptionists.Count; j++)
+                    for (int j = 0; j < labs[i].LabWorkers.Count; j++)
                     {
-                        if (email == collectionPoints[i].Receptionists.ElementAt(j).Email)
+                        if (email == labs[i].LabWorkers.ElementAt(j).Email)
                         {
                             validWorkerValues = false;
                             break;
                         }
-                        if (contactNumber == collectionPoints[i].Receptionists.ElementAt(j).ContactNumber)
+                        if (contactNumber == labs[i].LabWorkers.ElementAt(j).ContactNumber)
                         {
                             validWorkerValues = false;
                             break;
@@ -214,14 +217,12 @@ namespace MedLab.Model.Utils
                 DateTime dateOfBirth = randomDataGenerator.GenerateDate(new DateTime(1940, 1, 1), new DateTime(2024, 9, 1)).Date;
                 string email = null;
                 string contactNumber = null;
-                string password = null;
                 if (random.Next(0, 2) == 1)
                 {
                     if (random.Next(0, 2) == 1)
                         email = randomDataGenerator.GenerateEmail();
                     else
                         contactNumber = randomDataGenerator.GeneratePhoneNumber();
-                    password = randomDataGenerator.GeneratePassword();
                 }
 
                 patients.Add(new Patient()
@@ -326,7 +327,58 @@ namespace MedLab.Model.Utils
                     }
                 }
             }
-            return new MedLabData(patients, collectionPoints, testTypes, testCollection, labs,newTypes);
+
+            //accounts
+            PasswordHasher passwordHasher = new PasswordHasher();
+            List<User> users = new List<User>();
+            foreach (Patient patient in patients)
+            {
+                if (patient.Email != null)
+                {
+                    users.Add(new User
+                    {
+                        UserId = userID,
+                        Role = "patient",
+                        ReferencedId = patient.PatientId,
+                        Login = patient.FullName.Substring(0, 1),
+                        Hash = PasswordHasher.HashPassword(patient.FullName.Substring(0, 1) + patient.Email.Substring(0, 1)),
+                    });
+                    userID++;
+                }
+            }
+            foreach (CollectionPoint collectionPoint in collectionPoints)
+            {
+                foreach (Receptionist receptionist in collectionPoint.Receptionists)
+                {
+                    users.Add(new User
+                    {
+                        UserId = userID,
+                        Role = "receptionist",
+                        ReferencedId = receptionist.ReceptionistId,
+                        Login = receptionist.FullName.Substring(0, 1),
+                        Hash = PasswordHasher.HashPassword(receptionist.FullName.Substring(0, 1) + receptionist.Email.Substring(0, 1)),
+                    });
+                    userID++;
+
+                }
+            }
+            foreach (Laboratory lab in labs)
+            {
+                foreach (LabWorker labWorker in lab.LabWorkers)
+                {
+                    users.Add(new User
+                    {
+                        UserId = userID,
+                        Role = "lab_worker",
+                        ReferencedId = labWorker.LabWorkerId,
+                        Login = labWorker.FullName.Substring(0, 1),
+                        Hash = PasswordHasher.HashPassword(labWorker.FullName.Substring(0, 1) + labWorker.Email.Substring(0, 1)),
+                    });
+                    userID++;
+
+                }
+            }
+            return new MedLabData(patients, collectionPoints, testTypes, testCollection, labs, users, newTypes);
         }
     }
 }
