@@ -15,12 +15,14 @@ namespace MedLab.Model.Utils
 {
     public class MockDataGenerator
     {
-        public async Task<MedLabData> GenerateData(GenerationAmounts generatedAmount, bool validTestTypes)
+        public async Task<MedLabData> GenerateData(GenerationAmounts generatedAmount)
         {
             Wv1Context context = new Wv1Context();
 
-            int collectionPointId = (await context.CollectionPoints.MaxAsync(e => (int?)e.CollectionPointId) ?? 0) + 1;
+            int collectionPointID = (await context.CollectionPoints.MaxAsync(e => (int?)e.CollectionPointId) ?? 0) + 1;
             int receptionistsID = (await context.Receptionists.MaxAsync(e => (int?)e.ReceptionistId) ?? 0) + 1;
+            int laboratoryID = (await context.Laboratories.MaxAsync(e => (int?)e.LaboratoryId) ?? 0) + 1;
+            int workerID = (await context.LabWorkers.MaxAsync(e => (int?)e.LabWorkerId) ?? 0) + 1;
             int patientID = (await context.Patients.MaxAsync(e => (int?)e.PatientId) ?? 0) + 1;
             int batchID = (await context.TestBatches.MaxAsync(e => (int?)e.TestBatchId) ?? 0) + 1;
             int orderID = (await context.TestOrders.MaxAsync(e => (int?)e.TestOrderId) ?? 0) + 1;
@@ -74,13 +76,13 @@ namespace MedLab.Model.Utils
                 }
                 collectionPoints.Add(new CollectionPoint()
                 {
-                    CollectionPointId = collectionPointId,
+                    CollectionPointId = collectionPointID,
                     Address = address,
                     Email = email,
                     ContactNumber = contactNumber,
                     Receptionists = new List<Receptionist>()
                 });
-                collectionPointId++;
+                collectionPointID++;
                 collectionPointsGenerated++;
             }
             // receptionists for collection points
@@ -92,21 +94,21 @@ namespace MedLab.Model.Utils
                     string fullName = randomDataGenerator.GenerateFullname();
                     string email = randomDataGenerator.GenerateEmail();
                     string contactNumber = randomDataGenerator.GeneratePhoneNumber();
-                    bool validLabValues = true;
+                    bool validReceptionistValues = true;
                     for (int j = 0; j < collectionPoints[i].Receptionists.Count; j++)
                     {
                         if (email == collectionPoints[i].Receptionists.ElementAt(j).Email)
                         {
-                            validLabValues = false;
+                            validReceptionistValues = false;
                             break;
                         }
                         if (contactNumber == collectionPoints[i].Receptionists.ElementAt(j).ContactNumber)
                         {
-                            validLabValues = false;
+                            validReceptionistValues = false;
                             break;
                         }
                     }
-                    if (!validLabValues)
+                    if (!validReceptionistValues)
                     {
                         continue;
                     }
@@ -120,6 +122,86 @@ namespace MedLab.Model.Utils
                     });
                     receptionistsID++;
                     receptionistsGenerated++;
+                }
+            }
+            //labs
+            int amountOfLabs = generatedAmount.labsAmount;
+            List<Laboratory> labs = new List<Laboratory>();
+            for (int labsGenerated = 0; labsGenerated < amountOfLabs;)
+            {
+                string email = randomDataGenerator.GenerateEmail();
+                string contactNumber = randomDataGenerator.GeneratePhoneNumber();
+                string address = randomDataGenerator.GenerateAddress();
+                bool validLabValues = true;
+                for (int i = 0; i < collectionPoints.Count; i++)
+                {
+                    if (email == collectionPoints[i].Email)
+                    {
+                        validLabValues = false;
+                        break;
+                    }
+                    if (contactNumber == collectionPoints[i].ContactNumber)
+                    {
+                        validLabValues = false;
+                        break;
+                    }
+                    if (address == collectionPoints[i].Address)
+                    {
+                        validLabValues = false;
+                        break;
+                    }
+                }
+                if (!validLabValues)
+                {
+                    continue;
+                }
+                labs.Add(new Laboratory()
+                {
+                    LaboratoryId = laboratoryID,
+                    Address = address,
+                    Email = email,
+                    ContactNumber = contactNumber,
+                    LabWorkers = new List<LabWorker>()
+                });
+                laboratoryID++;
+                labsGenerated++;
+            }
+            // workers for labs
+            for (int i = 0; i < labs.Count; i++)
+            {
+                int amountOfWorkers = generatedAmount.workersAmount;
+                for (int workersGenerated = 0; workersGenerated < amountOfWorkers;)
+                {
+                    string fullName = randomDataGenerator.GenerateFullname();
+                    string email = randomDataGenerator.GenerateEmail();
+                    string contactNumber = randomDataGenerator.GeneratePhoneNumber();
+                    bool validWorkerValues = true;
+                    for (int j = 0; j < collectionPoints[i].Receptionists.Count; j++)
+                    {
+                        if (email == collectionPoints[i].Receptionists.ElementAt(j).Email)
+                        {
+                            validWorkerValues = false;
+                            break;
+                        }
+                        if (contactNumber == collectionPoints[i].Receptionists.ElementAt(j).ContactNumber)
+                        {
+                            validWorkerValues = false;
+                            break;
+                        }
+                    }
+                    if (!validWorkerValues)
+                    {
+                        continue;
+                    }
+                    labs[i].LabWorkers.Add(new LabWorker()
+                    {
+                        LabWorkerId = workerID,
+                        FullName = fullName,
+                        Email = email,
+                        ContactNumber = contactNumber,
+                    });
+                    workerID++;
+                    workersGenerated++;
                 }
             }
             //patients
@@ -234,7 +316,8 @@ namespace MedLab.Model.Utils
                         {
                             TestOrderId = orderID,
                             TestType = testType,
-                            TestResult = result
+                            TestResult = result,
+                            Laboratory = labs[random.Next(0, labs.Count)]
                         };
 
                         batch.TestOrders.Add(order);
@@ -243,7 +326,7 @@ namespace MedLab.Model.Utils
                     }
                 }
             }
-            return new MedLabData(patients, collectionPoints, testTypes, testCollection, newTypes);
+            return new MedLabData(patients, collectionPoints, testTypes, testCollection, labs,newTypes);
         }
     }
 }

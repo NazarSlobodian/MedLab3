@@ -16,14 +16,16 @@ namespace MedLab.Model
         private List<CollectionPoint> collectionPoints;
         private List<TestType> testTypes;
         private List<TestPanel> testPanels;
+        private List<Laboratory> laboratories;
         private bool newTypes;
-        public MedLabData(List<Patient> patients, List<CollectionPoint> collectionPoints, List<TestType> testTypes, List<TestPanel> testPanels, bool newTypes)
+        public MedLabData(List<Patient> patients, List<CollectionPoint> collectionPoints, List<TestType> testTypes, List<TestPanel> testPanels, List<Laboratory> labs, bool newTypes)
         {
             this.patients = patients;
             this.collectionPoints = collectionPoints;
             this.testTypes = testTypes;
             this.testPanels = testPanels;
             this.newTypes = newTypes;
+            this.laboratories = labs;
         }
         public void Insert()
         {
@@ -39,6 +41,7 @@ namespace MedLab.Model
                 context.TestPanels.AttachRange(testPanels);
             }
             context.CollectionPoints.AddRange(collectionPoints);
+            context.Laboratories.AddRange(laboratories);
             context.Patients.AddRange(patients);
             context.SaveChanges();
         }

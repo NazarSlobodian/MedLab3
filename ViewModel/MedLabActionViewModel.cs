@@ -78,6 +78,31 @@ namespace MedLab.ViewModel
             }
         }
 
+        private int labsAmount = 1;
+
+        public int LabsAmount
+        {
+            get { return labsAmount; }
+            set
+            {
+                labsAmount = value;
+                OnPropertyChanged(nameof(LabsAmount));
+            }
+        }
+
+        private int workersPerLab = 1;
+
+        public int WorkersPerLab
+        {
+            get { return workersPerLab; }
+            set
+            {
+                workersPerLab = value;
+                OnPropertyChanged(nameof(WorkersPerLab));
+            }
+        }
+
+
         private void TruncateAll()
         {
             medLabDatabase.TruncateAll();
@@ -88,8 +113,7 @@ namespace MedLab.ViewModel
             {
                 medLabDatabase.GenerateAndInsert(
                     new GenerationAmounts(CollectionPointAmount, ReceptionistsAmount, PatientAmount,
-                    BatchesPerPatient, OrdersPerBatch),
-                    false);
+                    BatchesPerPatient, OrdersPerBatch, LabsAmount, WorkersPerLab));
             }
             catch (InvalidOperationException exception)
             {
@@ -105,8 +129,7 @@ namespace MedLab.ViewModel
                 {
                     medLabDatabase.GenerateAndInsert(
                         new GenerationAmounts(CollectionPointAmount, ReceptionistsAmount, PatientAmount,
-                        BatchesPerPatient,OrdersPerBatch),
-                        true);
+                        BatchesPerPatient,OrdersPerBatch, LabsAmount, WorkersPerLab));
                     popup.Close();
                 },
                 abortAction: () =>
