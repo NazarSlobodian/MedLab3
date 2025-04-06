@@ -124,6 +124,7 @@ namespace MedLab.ViewModel
         {
             try
             {
+                IsButtonEnabled = false;
                 medLabDatabase.GenerateAndInsert(
                     new GenerationAmounts(CollectionPointAmount, ReceptionistsAmount, PatientAmount,
                     BatchesPerPatient, OrdersPerBatch, LabsAmount, WorkersPerLab));
@@ -131,6 +132,10 @@ namespace MedLab.ViewModel
             catch (InvalidOperationException exception)
             {
                 HandleInvalidDbExceptionExecute(exception);
+            }
+            finally
+            {
+                IsButtonEnabled = true;
             }
         }
         private void HandleInvalidDbExceptionExecute(InvalidOperationException exception)
@@ -140,9 +145,11 @@ namespace MedLab.ViewModel
             ErrorPopupViewModel errorViewModel = new ErrorPopupViewModel(
                 proceedAction: () =>
                 {
+                    IsButtonEnabled = false;
                     medLabDatabase.GenerateAndInsert(
                         new GenerationAmounts(CollectionPointAmount, ReceptionistsAmount, PatientAmount,
                         BatchesPerPatient,OrdersPerBatch, LabsAmount, WorkersPerLab));
+                    IsButtonEnabled = true;
                     popup.Close();
                 },
                 abortAction: () =>

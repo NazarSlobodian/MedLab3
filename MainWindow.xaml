@@ -74,7 +74,7 @@
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="2*"/>
             </Grid.RowDefinitions>
-            <Button Command="{Binding GenerateAndSqlizeExecuteCommand}" Grid.Row="0" Grid.Column="2" Background="#FF9AF551">
+            <Button Command="{Binding GenerateAndSqlizeExecuteCommand}" Grid.Row="0" Grid.Column="2" Background="#FF9AF551" IsEnabled="{Binding IsButtonEnabled}">
                 <TextBlock Text="Generate and execute INSERT" TextWrapping="Wrap" TextAlignment="Center"/>
             </Button>
             <Button Command="{Binding TruncateAllCommand}" Grid.Row="0" Grid.Column="4" Background="#FFFF6F6F">Delete</Button>
