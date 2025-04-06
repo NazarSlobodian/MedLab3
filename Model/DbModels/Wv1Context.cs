@@ -34,8 +34,6 @@ public partial class Wv1Context : DbContext
 
     public virtual DbSet<TestPanel> TestPanels { get; set; }
 
-    public virtual DbSet<TestPerformer> TestPerformers { get; set; }
-
     public virtual DbSet<TestResult> TestResults { get; set; }
 
     public virtual DbSet<TestType> TestTypes { get; set; }
@@ -128,6 +126,28 @@ public partial class Wv1Context : DbContext
             entity.Property(e => e.Email)
                 .HasMaxLength(320)
                 .HasColumnName("email");
+
+            entity.HasMany(d => d.TestTypes).WithMany(p => p.Laboratories)
+                .UsingEntity<Dictionary<string, object>>(
+                    "TestPerformer",
+                    r => r.HasOne<TestType>().WithMany()
+                        .HasForeignKey("TestTypeId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("perfTestId"),
+                    l => l.HasOne<Laboratory>().WithMany()
+                        .HasForeignKey("LaboratoryId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("perfLabId"),
+                    j =>
+                    {
+                        j.HasKey("LaboratoryId", "TestTypeId")
+                            .HasName("PRIMARY")
+                            .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                        j.ToTable("test_performers");
+                        j.HasIndex(new[] { "TestTypeId" }, "perfTestId_idx");
+                        j.IndexerProperty<int>("LaboratoryId").HasColumnName("laboratoryID");
+                        j.IndexerProperty<int>("TestTypeId").HasColumnName("testTypeID");
+                    });
         });
 
         modelBuilder.Entity<Patient>(entity =>
@@ -200,7 +220,7 @@ public partial class Wv1Context : DbContext
             entity.Property(e => e.TestBatchId).HasColumnName("testBatchID");
             entity.Property(e => e.BatchStatus)
                 .HasDefaultValueSql("'queued'")
-                .HasColumnType("enum('queued','processed','done')")
+                .HasColumnType("enum('queued','processing','done')")
                 .HasColumnName("batchStatus");
             entity.Property(e => e.DateOfCreation)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -328,30 +348,6 @@ public partial class Wv1Context : DbContext
                         j.IndexerProperty<int>("TestPanelId").HasColumnName("testPanelID");
                         j.IndexerProperty<int>("TestTypeId").HasColumnName("testTypeID");
                     });
-        });
-
-        modelBuilder.Entity<TestPerformer>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToTable("test_performers");
-
-            entity.HasIndex(e => e.LaboratoryId, "laboratorieID_UNIQUE").IsUnique();
-
-            entity.HasIndex(e => e.TestTypeId, "testTypeID_UNIQUE").IsUnique();
-
-            entity.Property(e => e.LaboratoryId).HasColumnName("laboratoryID");
-            entity.Property(e => e.TestTypeId).HasColumnName("testTypeID");
-
-            entity.HasOne(d => d.Laboratory).WithOne()
-                .HasForeignKey<TestPerformer>(d => d.LaboratoryId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("perfLaboratoryID");
-
-            entity.HasOne(d => d.TestType).WithOne()
-                .HasForeignKey<TestPerformer>(d => d.TestTypeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("perfTestID");
         });
 
         modelBuilder.Entity<TestResult>(entity =>

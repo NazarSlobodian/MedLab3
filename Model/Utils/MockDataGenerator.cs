@@ -170,6 +170,14 @@ namespace MedLab.Model.Utils
                 laboratoryID++;
                 labsGenerated++;
             }
+            //performers
+            foreach (Laboratory lab in labs)
+            {
+                foreach (TestType testType in testTypes)
+                {
+                    lab.TestTypes.Add(testType);
+                }
+            }
             // workers for labs
             for (int i = 0; i < labs.Count; i++)
             {
@@ -426,6 +434,7 @@ namespace MedLab.Model.Utils
 
                 }
             }
+
             return new MedLabData(patients, collectionPoints, testTypes, testCollection, labs, users, newTypes);
         }
     }

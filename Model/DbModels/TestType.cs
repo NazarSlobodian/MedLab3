@@ -17,5 +17,7 @@ public partial class TestType
 
     public virtual ICollection<TestOrder> TestOrders { get; set; } = new List<TestOrder>();
 
+    public virtual ICollection<Laboratory> Laboratories { get; set; } = new List<Laboratory>();
+
     public virtual ICollection<TestPanel> TestPanels { get; set; } = new List<TestPanel>();
 }
