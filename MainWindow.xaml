@@ -11,55 +11,66 @@
             <RowDefinition Height="1*" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        
+
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.5*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="0.5*" />
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="0.5*" />
                 <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="0.5*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="4*"/>
+                <RowDefinition Height="3*"/>
                 <RowDefinition Height="0.5*"/>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
+                <RowDefinition Height="0.5*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
 
-            <Label Content="Collection points" Grid.Row="0" Grid.Column="0" VerticalAlignment="Bottom"/>
-            <Slider Value="{Binding CollectionPointAmount, UpdateSourceTrigger=PropertyChanged}" IsSnapToTickEnabled="True" Minimum="1" Maximum="10" Grid.Row="1" Grid.Column="0"/>
-            <Label Content="{Binding CollectionPointAmount}" Grid.Row="2" Grid.Column="0"/>
+            <Label Content="Collection points" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom"/>
+            <Slider Value="{Binding CollectionPointAmount, UpdateSourceTrigger=PropertyChanged}" IsSnapToTickEnabled="True" Minimum="1" Maximum="10" Grid.Row="1" Grid.Column="1"/>
+            <Label Content="{Binding CollectionPointAmount}" Grid.Row="2" Grid.Column="1"/>
 
-            <Label Content="Receptionists per collection point" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom"/>
-            <Slider Value="{Binding ReceptionistsAmount, UpdateSourceTrigger=PropertyChanged}" IsSnapToTickEnabled="True" Minimum="1" Maximum="10" Grid.Row="1" Grid.Column="1"/>
-            <Label Content="{Binding ReceptionistsAmount}" Grid.Row="2" Grid.Column="1"/>
+            <Label Grid.Row="3" Grid.Column="1" VerticalAlignment="Bottom">
+                <TextBlock Text="Receptionists per collection point"
+                TextWrapping="Wrap" />
+            </Label>
+            <Slider Value="{Binding ReceptionistsAmount, UpdateSourceTrigger=PropertyChanged}" IsSnapToTickEnabled="True" Minimum="1" Maximum="10" Grid.Row="4" Grid.Column="1"/>
+            <Label Content="{Binding ReceptionistsAmount}" Grid.Row="5" Grid.Column="1"/>
 
-            <Label Content="Patients" Grid.Row="0" Grid.Column="2" VerticalAlignment="Bottom"/>
-            <Slider Value="{Binding PatientAmount, UpdateSourceTrigger=PropertyChanged}" IsSnapToTickEnabled="True" Minimum="1" Maximum="100" Grid.Row="1" Grid.Column="2"/>
-            <Label Content="{Binding PatientAmount}" Grid.Row="2" Grid.Column="2"/>
-            
-            <Label Content="Batches per patient" Grid.Row="0" Grid.Column="3" VerticalAlignment="Bottom"/>
-            <Slider Value="{Binding BatchesPerPatient, UpdateSourceTrigger=PropertyChanged}" IsSnapToTickEnabled="True" Minimum="1" Maximum="10" Grid.Row="1" Grid.Column="3"/>
-            <Label Content="{Binding BatchesPerPatient}" Grid.Row="2" Grid.Column="3"/>
-            
-            <Label Content="Orders per batch" Grid.Row="0" Grid.Column="4" VerticalAlignment="Bottom"/>
-            <Slider Value="{Binding OrdersPerBatch, UpdateSourceTrigger=PropertyChanged}" IsSnapToTickEnabled="True" Minimum="1" Maximum="5" Grid.Row="1" Grid.Column="4"/>
-            <Label  Content="{Binding OrdersPerBatch}" Grid.Row="2" Grid.Column="4"/>
+            <Label Content="Patients" Grid.Row="0" Grid.Column="3" VerticalAlignment="Bottom"/>
+            <Slider Value="{Binding PatientAmount, UpdateSourceTrigger=PropertyChanged}" IsSnapToTickEnabled="True" Minimum="1" Maximum="100" Grid.Row="1" Grid.Column="3"/>
+            <Label Content="{Binding PatientAmount}" Grid.Row="2" Grid.Column="3"/>
 
-            <Label Content="Labs" Grid.Row="0" Grid.Column="5" VerticalAlignment="Bottom"/>
-            <Slider Value="{Binding LabsAmount, UpdateSourceTrigger=PropertyChanged}" IsSnapToTickEnabled="True" Minimum="1" Maximum="10" Grid.Row="1" Grid.Column="5"/>
-            <Label Content="{Binding LabsAmount}" Grid.Row="2" Grid.Column="5"/>
+            <Label Grid.Row="3" Grid.Column="3" VerticalAlignment="Bottom">
+                <TextBlock Text="Batches per patient"
+                TextWrapping="Wrap" />
+            </Label>
+            <Slider Value="{Binding BatchesPerPatient, UpdateSourceTrigger=PropertyChanged}" IsSnapToTickEnabled="True" Minimum="1" Maximum="10" Grid.Row="4" Grid.Column="3"/>
+            <Label Content="{Binding BatchesPerPatient}" Grid.Row="5" Grid.Column="3"/>
 
-            <Label Content="Workers per lab" Grid.Row="0" Grid.Column="6" VerticalAlignment="Bottom"/>
-            <Slider Value="{Binding WorkersPerLab, UpdateSourceTrigger=PropertyChanged}" IsSnapToTickEnabled="True" Minimum="1" Maximum="5" Grid.Row="1" Grid.Column="6"/>
-            <Label  Content="{Binding WorkersPerLab}" Grid.Row="2" Grid.Column="6"/>
-            
+            <Label Grid.Row="3" Grid.Column="4" VerticalAlignment="Bottom">
+                <TextBlock Text="Orders per batch"
+                TextWrapping="Wrap"/>
+            </Label>
+            <Slider Value="{Binding OrdersPerBatch, UpdateSourceTrigger=PropertyChanged}" IsSnapToTickEnabled="True" Minimum="1" Maximum="5" Grid.Row="4" Grid.Column="4"/>
+            <Label  Content="{Binding OrdersPerBatch}" Grid.Row="5" Grid.Column="4"/>
+
+            <Label Content="Labs" Grid.Row="0" Grid.Column="6" VerticalAlignment="Bottom"/>
+            <Slider Value="{Binding LabsAmount, UpdateSourceTrigger=PropertyChanged}" IsSnapToTickEnabled="True" Minimum="1" Maximum="10" Grid.Row="1" Grid.Column="6"/>
+            <Label Content="{Binding LabsAmount}" Grid.Row="2" Grid.Column="6"/>
+
+            <Label Content="Workers per lab" Grid.Row="3" Grid.Column="6" VerticalAlignment="Bottom"/>
+            <Slider Value="{Binding WorkersPerLab, UpdateSourceTrigger=PropertyChanged}" IsSnapToTickEnabled="True" Minimum="1" Maximum="10" Grid.Row="4" Grid.Column="6"/>
+            <Label  Content="{Binding WorkersPerLab}" Grid.Row="5" Grid.Column="6"/>
+
         </Grid>
-        
+
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
