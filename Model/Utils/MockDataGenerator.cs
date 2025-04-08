@@ -95,7 +95,7 @@ namespace MedLab.Model.Utils
                 int amountOfReceptionists = generatedAmount.receptionistsAmount;
                 for (int receptionistsGenerated = 0; receptionistsGenerated < amountOfReceptionists;)
                 {
-                    string fullName = randomDataGenerator.GenerateFullname();
+                    string fullName = random.NextDouble() < 0.5 ? randomDataGenerator.GenerateFullname('m') : randomDataGenerator.GenerateFullname('f');
                     string email = randomDataGenerator.GenerateEmail();
                     string contactNumber = randomDataGenerator.GeneratePhoneNumber();
                     bool validReceptionistValues = true;
@@ -184,7 +184,7 @@ namespace MedLab.Model.Utils
                 int amountOfWorkers = generatedAmount.workersAmount;
                 for (int workersGenerated = 0; workersGenerated < amountOfWorkers;)
                 {
-                    string fullName = randomDataGenerator.GenerateFullname();
+                    string fullName = random.NextDouble() < 0.5 ? randomDataGenerator.GenerateFullname('m') : randomDataGenerator.GenerateFullname('f');
                     string email = randomDataGenerator.GenerateEmail();
                     string contactNumber = randomDataGenerator.GeneratePhoneNumber();
                     bool validWorkerValues = true;
@@ -221,8 +221,8 @@ namespace MedLab.Model.Utils
             List<Patient> patients = new List<Patient>();
             for (int patientsGenerated = 0; patientsGenerated < patientAmount;)
             {
-                string fullName = randomDataGenerator.GenerateFullname();
                 string gender = randomDataGenerator.GenerateGender();
+                string fullName = randomDataGenerator.GenerateFullname(gender[0]);
                 DateTime dateOfBirth = randomDataGenerator.GenerateDate(new DateTime(1940, 1, 1), new DateTime(2024, 9, 1)).Date;
                 string email = null;
                 string contactNumber = null;
@@ -389,15 +389,15 @@ namespace MedLab.Model.Utils
             List<User> users = new List<User>();
             foreach (Patient patient in patients)
             {
-                if (patient.Email != null)
+                if (patient.Email != null && random.NextDouble() < 0.5)
                 {
                     users.Add(new User
                     {
                         UserId = userID,
                         Role = "patient",
                         ReferencedId = patient.PatientId,
-                        Login = patient.FullName.Substring(0, 1),
-                        Hash = PasswordHasher.HashPassword(patient.FullName.Substring(0, 1) + patient.Email.Substring(0, 1)),
+                        Login = patient.Email,
+                        Hash = PasswordHasher.HashPassword(patient.Email.Substring(0, 2)),
                     });
                     userID++;
                 }
@@ -411,8 +411,8 @@ namespace MedLab.Model.Utils
                         UserId = userID,
                         Role = "receptionist",
                         ReferencedId = receptionist.ReceptionistId,
-                        Login = receptionist.FullName.Substring(0, 1),
-                        Hash = PasswordHasher.HashPassword(receptionist.FullName.Substring(0, 1) + receptionist.Email.Substring(0, 1)),
+                        Login = receptionist.Email,
+                        Hash = PasswordHasher.HashPassword(receptionist.Email.Substring(0, 2)),
                     });
                     userID++;
 
@@ -427,8 +427,8 @@ namespace MedLab.Model.Utils
                         UserId = userID,
                         Role = "lab_worker",
                         ReferencedId = labWorker.LabWorkerId,
-                        Login = labWorker.FullName.Substring(0, 1),
-                        Hash = PasswordHasher.HashPassword(labWorker.FullName.Substring(0, 1) + labWorker.Email.Substring(0, 1)),
+                        Login = labWorker.Email,
+                        Hash = PasswordHasher.HashPassword(labWorker.Email.Substring(0, 2)),
                     });
                     userID++;
 

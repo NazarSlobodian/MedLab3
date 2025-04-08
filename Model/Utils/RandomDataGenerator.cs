@@ -72,7 +72,7 @@ namespace MedLab.Model.Utils
             "kPa",
             "mmHg"
         };
-        private List<string> names = new List<string>()
+        private List<string> namesM = new List<string>()
         {
             "Saul",
             "Petro",
@@ -80,12 +80,15 @@ namespace MedLab.Model.Utils
             "Pavlo",
             "Roman",
             "Vlad",
-            "Anastasia",
-            "Katherine",
             "Mike",
             "Paul",
             "Bob",
             "Ted",
+        };
+        private List<string> namesF = new List<string>()
+        {
+            "Anastasia",
+            "Katherine",
             "Olivia",
             "Maria",
             "Alice",
@@ -190,9 +193,9 @@ namespace MedLab.Model.Utils
                     return "";
             }
         }
-        public string GenerateFullname()
+        public string GenerateFullname(char sex)
         {
-            string name = names[random.Next(0, names.Count)];
+            string name = sex == 'm' ? namesM[random.Next(0, namesM.Count)] : namesF[random.Next(0, namesF.Count)];
             string surname = surnames[random.Next(0, surnames.Count)];
             return $"{name} {surname}";
         }
