@@ -77,6 +77,18 @@ namespace MedLab.ViewModel
                 OnPropertyChanged(nameof(OrdersPerBatch));
             }
         }
+        private int panelsPerBatch = 1;
+        public int PanelsPerBatch
+        {
+            get { return panelsPerBatch; }
+            set
+            {
+                panelsPerBatch = value;
+                OnPropertyChanged(nameof(PanelsPerBatch));
+            }
+        }
+
+
 
         private int labsAmount = 1;
 
@@ -127,7 +139,7 @@ namespace MedLab.ViewModel
                 IsButtonEnabled = false;
                 medLabDatabase.GenerateAndInsert(
                     new GenerationAmounts(CollectionPointAmount, ReceptionistsAmount, PatientAmount,
-                    BatchesPerPatient, OrdersPerBatch, LabsAmount, WorkersPerLab));
+                    BatchesPerPatient, OrdersPerBatch, PanelsPerBatch, LabsAmount, WorkersPerLab));
             }
             catch (InvalidOperationException exception)
             {
@@ -148,7 +160,7 @@ namespace MedLab.ViewModel
                     IsButtonEnabled = false;
                     medLabDatabase.GenerateAndInsert(
                         new GenerationAmounts(CollectionPointAmount, ReceptionistsAmount, PatientAmount,
-                        BatchesPerPatient,OrdersPerBatch, LabsAmount, WorkersPerLab));
+                        BatchesPerPatient,OrdersPerBatch, PanelsPerBatch, LabsAmount, WorkersPerLab));
                     IsButtonEnabled = true;
                     popup.Close();
                 },

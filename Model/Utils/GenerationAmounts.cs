@@ -13,16 +13,18 @@ namespace MedLab.Model.Utils
         public int patientAmount;
         public int batchesPerPatient;
         public int ordersPerBatch;
+        public int panelsPerBatch;
         public int labsAmount;
         public int workersAmount;
         public GenerationAmounts(int collectionPointAmount, int receptionistsAmount, int patientAmount,
-            int batchesPerPatient, int ordersPerBatch, int labsAmount, int workersAmount)
+            int batchesPerPatient, int ordersPerBatch, int panelsPerBatch, int labsAmount, int workersAmount)
         {
             this.collectionPointAmount = collectionPointAmount;
             this.receptionistsAmount = receptionistsAmount;
             this.patientAmount = patientAmount;
             this.batchesPerPatient = batchesPerPatient;
             this.ordersPerBatch = ordersPerBatch;
+            this.panelsPerBatch = panelsPerBatch;
             this.labsAmount = labsAmount;
             this.workersAmount = workersAmount;
         }

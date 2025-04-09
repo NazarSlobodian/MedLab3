@@ -276,72 +276,12 @@ namespace MedLab.Model.Utils
                 {
                     List<Receptionist> receptionists = collectionPoints[random.Next(0, collectionPoints.Count)].Receptionists.ToList();
                     receptionists[random.Next(0, receptionists.Count)].TestBatches.Add(batch);
-                    double chance = random.NextDouble();
-                    if (chance < 0.5)
-                    {
-                        int amountOfTests = generatedAmount.ordersPerBatch;
-                        int testTypeIndex = random.Next(0, testTypes.Count);
-                        for (int testsAdded = 0; testsAdded < amountOfTests;)
-                        {
-                            TestType testType = testTypes[testTypeIndex];
-                            bool validLabValues = true;
-                            for (int i = 0; i < batch.TestOrders.Count; i++)
-                            {
-                                if (batch.TestOrders.ElementAt(i).TestType == testType)
-                                {
-                                    validLabValues = false;
-                                    break;
-                                }
-                            }
-                            if (!validLabValues)
-                            {
-                                testTypeIndex++;
-                                if (testTypeIndex >= testTypes.Count)
-                                    testTypeIndex = 0;
-                                continue;
-                            }
-                            TestResult result = null;
-                            if (batch.BatchStatus == "done")
-                            {
-                                int patientAge = (int)(DateTime.Now - patient.DateOfBirth.ToDateTime(TimeOnly.Parse("00:00 AM"))).TotalDays / 365;
-                                double testResult = 0.0;
-                                TestNormalValue resultNormalValues = testTypes
-                                    .Find((x) => x == testType).TestNormalValues.ToList()
-                                    .Find((x) =>
-                                    (x.Gender == patient.Gender) && patientAge >= x.MinAge && patientAge <= x.MaxAge);
-                                if (resultNormalValues != null)
-                                {
-                                    testResult = randomDataGenerator.RandomTestResult((double)resultNormalValues.MinResValue, (double)resultNormalValues.MaxResValue);
-                                }
-                                else
-                                {
-                                    testResult = randomDataGenerator.RandomTestResult(0.0, 100.0);
-                                }
-                                DateTime dateOfTest = randomDataGenerator.GenerateDate(batch.DateOfCreation, batch.DateOfCreation.AddDays(5));
-                                result = new TestResult()
-                                {
-                                    TestOrderId = orderID,
-                                    Result = (decimal)testResult,
-                                    DateOfTest = DateOnly.FromDateTime(dateOfTest)
-                                };
-                            }
-                            TestOrder order = new TestOrder()
-                            {
-                                TestOrderId = orderID,
-                                TestType = testType,
-                                TestResult = result,
-                                Laboratory = labs[random.Next(0, labs.Count)]
-                            };
 
-                            batch.TestOrders.Add(order);
-                            orderID++;
-                            testsAdded++;
-                        }
-
-                    }
-                    else
+                    for (int i = 0; i < generatedAmount.panelsPerBatch; i++)
                     {
                         int testPanelIndex = random.Next(0, testCollection.Count);
+                        while (batch.TestOrders.Select(x => x.TestPanelId).Contains(testCollection[testPanelIndex].TestPanelId))
+                            testPanelIndex = random.Next(0, testCollection.Count);
                         foreach (TestType testType in testCollection[testPanelIndex].TestTypes)
                         {
                             TestResult result = null;
@@ -380,6 +320,66 @@ namespace MedLab.Model.Utils
                             batch.TestOrders.Add(order);
                             orderID++;
                         }
+                    }
+
+
+                    int amountOfTests = generatedAmount.ordersPerBatch;
+                    int testTypeIndex = random.Next(0, testTypes.Count);
+                    for (int testsAdded = 0; testsAdded < amountOfTests;)
+                    {
+                        TestType testType = testTypes[testTypeIndex];
+                        bool validLabValues = true;
+                        for (int i = 0; i < batch.TestOrders.Count; i++)
+                        {
+                            if (batch.TestOrders.ElementAt(i).TestType == testType)
+                            {
+                                validLabValues = false;
+                                break;
+                            }
+                        }
+                        if (!validLabValues)
+                        {
+                            testTypeIndex++;
+                            if (testTypeIndex >= testTypes.Count)
+                                testTypeIndex = 0;
+                            continue;
+                        }
+                        TestResult result = null;
+                        if (batch.BatchStatus == "done")
+                        {
+                            int patientAge = (int)(DateTime.Now - patient.DateOfBirth.ToDateTime(TimeOnly.Parse("00:00 AM"))).TotalDays / 365;
+                            double testResult = 0.0;
+                            TestNormalValue resultNormalValues = testTypes
+                                .Find((x) => x == testType).TestNormalValues.ToList()
+                                .Find((x) =>
+                                (x.Gender == patient.Gender) && patientAge >= x.MinAge && patientAge <= x.MaxAge);
+                            if (resultNormalValues != null)
+                            {
+                                testResult = randomDataGenerator.RandomTestResult((double)resultNormalValues.MinResValue, (double)resultNormalValues.MaxResValue);
+                            }
+                            else
+                            {
+                                testResult = randomDataGenerator.RandomTestResult(0.0, 100.0);
+                            }
+                            DateTime dateOfTest = randomDataGenerator.GenerateDate(batch.DateOfCreation, batch.DateOfCreation.AddDays(5));
+                            result = new TestResult()
+                            {
+                                TestOrderId = orderID,
+                                Result = (decimal)testResult,
+                                DateOfTest = DateOnly.FromDateTime(dateOfTest)
+                            };
+                        }
+                        TestOrder order = new TestOrder()
+                        {
+                            TestOrderId = orderID,
+                            TestType = testType,
+                            TestResult = result,
+                            Laboratory = labs[random.Next(0, labs.Count)]
+                        };
+
+                        batch.TestOrders.Add(order);
+                        orderID++;
+                        testsAdded++;
                     }
                 }
             }
