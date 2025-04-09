@@ -301,7 +301,7 @@ namespace MedLab.Model.Utils
                                 continue;
                             }
                             TestResult result = null;
-                            if (batch.BatchStatus != "queued")
+                            if (batch.BatchStatus == "done")
                             {
                                 int patientAge = (int)(DateTime.Now - patient.DateOfBirth.ToDateTime(TimeOnly.Parse("00:00 AM"))).TotalDays / 365;
                                 double testResult = 0.0;
