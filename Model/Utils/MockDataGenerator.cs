@@ -285,7 +285,7 @@ namespace MedLab.Model.Utils
                         foreach (TestType testType in testCollection[testPanelIndex].TestTypes)
                         {
                             TestResult result = null;
-                            if (batch.BatchStatus != "queued")
+                            if (batch.BatchStatus == "done")
                             {
                                 int patientAge = (int)(DateTime.Now - patient.DateOfBirth.ToDateTime(TimeOnly.Parse("00:00 AM"))).TotalDays / 365;
                                 double testResult = 0.0;
@@ -306,7 +306,7 @@ namespace MedLab.Model.Utils
                                 {
                                     TestOrderId = orderID,
                                     Result = (decimal)testResult,
-                                    DateOfTest = DateOnly.FromDateTime(dateOfTest)
+                                    DateOfTest = dateOfTest
                                 };
                             }
                             TestOrder order = new TestOrder()
@@ -366,7 +366,7 @@ namespace MedLab.Model.Utils
                             {
                                 TestOrderId = orderID,
                                 Result = (decimal)testResult,
-                                DateOfTest = DateOnly.FromDateTime(dateOfTest)
+                                DateOfTest = dateOfTest
                             };
                         }
                         TestOrder order = new TestOrder()
@@ -434,7 +434,18 @@ namespace MedLab.Model.Utils
 
                 }
             }
-
+            bool adminExists = context.Users.Any(x => x.Role == "admin");
+            if (!adminExists)
+            {
+                users.Add(new User
+                {
+                    UserId = userID,
+                    Role = "admin",
+                    ReferencedId = userID,
+                    Login = "admin",
+                    Hash = PasswordHasher.HashPassword("admin"),
+                });
+            }
             return new MedLabData(patients, collectionPoints, testTypes, testCollection, labs, users, newTypes);
         }
     }

@@ -156,6 +156,10 @@ public partial class Wv1Context : DbContext
 
             entity.ToTable("patients");
 
+            entity.HasIndex(e => e.ContactNumber, "contactNumber_UNIQUE").IsUnique();
+
+            entity.HasIndex(e => e.Email, "email_UNIQUE").IsUnique();
+
             entity.HasIndex(e => new { e.FullName, e.Gender, e.DateOfBirth, e.Email, e.ContactNumber }, "unique_patient").IsUnique();
 
             entity.Property(e => e.PatientId).HasColumnName("patientID");
@@ -222,6 +226,9 @@ public partial class Wv1Context : DbContext
                 .HasDefaultValueSql("'queued'")
                 .HasColumnType("enum('queued','processing','done')")
                 .HasColumnName("batchStatus");
+            entity.Property(e => e.Cost)
+                .HasPrecision(7, 2)
+                .HasColumnName("cost");
             entity.Property(e => e.DateOfCreation)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime")
@@ -361,7 +368,10 @@ public partial class Wv1Context : DbContext
             entity.Property(e => e.TestOrderId)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("testOrderID");
-            entity.Property(e => e.DateOfTest).HasColumnName("dateOfTest");
+            entity.Property(e => e.DateOfTest)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime")
+                .HasColumnName("dateOfTest");
             entity.Property(e => e.Result)
                 .HasPrecision(5, 2)
                 .HasColumnName("result");
@@ -407,7 +417,7 @@ public partial class Wv1Context : DbContext
                 .HasColumnName("login");
             entity.Property(e => e.ReferencedId).HasColumnName("referencedID");
             entity.Property(e => e.Role)
-                .HasColumnType("enum('patient','receptionist','lab_worker','lab_admin')")
+                .HasColumnType("enum('patient','receptionist','lab_worker','lab_admin','admin')")
                 .HasColumnName("role");
         });
 
