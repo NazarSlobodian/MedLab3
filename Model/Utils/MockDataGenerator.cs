@@ -250,21 +250,23 @@ namespace MedLab.Model.Utils
             // batches
             foreach (Patient patient in patients)
             {
-                int amountOfBatches = generatedAmount.batchesPerPatient;
+                int amountOfBatches = random.Next(1, generatedAmount.batchesPerPatient + 1);
                 for (int i = 0; i < amountOfBatches; i++)
                 {
                     string status = randomDataGenerator.GenerateBatchStatus();
-                    DateTime openingDate = new DateTime(2024, 1, 1);
+                    DateTime openingDate = new DateTime(2023, 1, 1);
                     DateTime start = patient.DateOfBirth.ToDateTime(TimeOnly.Parse("00:00 AM")) < openingDate ? openingDate : patient.DateOfBirth.ToDateTime(TimeOnly.Parse("00:00 AM")).AddMonths(1);
-
                     //DateTime timeOfCreation = randomDataGenerator.GenerateDateTime(new DateTime(2024, 9, 2), new DateTime(2024, 10, 1));
                     DateTime timeOfCreation = randomDataGenerator.GenerateDateTime(start, DateTime.UtcNow);
+                    if (timeOfCreation < DateTime.Now.AddDays(-7))
+                        status = "done";
                     patient.TestBatches.Add(new TestBatch()
                     {
                         TestBatchId = batchID,
                         BatchStatus = status,
                         DateOfCreation = timeOfCreation,
-                        TestOrders = new List<TestOrder>()
+                        TestOrders = new List<TestOrder>(),
+                        Cost = 0.0m
                     });
                     batchID++;
                 }
@@ -276,12 +278,13 @@ namespace MedLab.Model.Utils
                 {
                     List<Receptionist> receptionists = collectionPoints[random.Next(0, collectionPoints.Count)].Receptionists.ToList();
                     receptionists[random.Next(0, receptionists.Count)].TestBatches.Add(batch);
-
-                    for (int i = 0; i < generatedAmount.panelsPerBatch; i++)
+                    int panelsAmount = random.Next(0, generatedAmount.panelsPerBatch + 1);
+                    for (int i = 0; i < panelsAmount; i++)
                     {
                         int testPanelIndex = random.Next(0, testCollection.Count);
                         while (batch.TestOrders.Select(x => x.TestPanelId).Contains(testCollection[testPanelIndex].TestPanelId))
                             testPanelIndex = random.Next(0, testCollection.Count);
+                        batch.Cost += testCollection[testPanelIndex].Cost;
                         foreach (TestType testType in testCollection[testPanelIndex].TestTypes)
                         {
                             TestResult result = null;
@@ -323,27 +326,13 @@ namespace MedLab.Model.Utils
                     }
 
 
-                    int amountOfTests = generatedAmount.ordersPerBatch;
-                    int testTypeIndex = random.Next(0, testTypes.Count);
+                    int amountOfTests = panelsAmount == 0 ? random.Next(1, generatedAmount.ordersPerBatch+1) : random.Next(0, generatedAmount.ordersPerBatch + 1);
                     for (int testsAdded = 0; testsAdded < amountOfTests;)
                     {
+                        int testTypeIndex = random.Next(0, testTypes.Count);
                         TestType testType = testTypes[testTypeIndex];
                         bool validLabValues = true;
-                        for (int i = 0; i < batch.TestOrders.Count; i++)
-                        {
-                            if (batch.TestOrders.ElementAt(i).TestType == testType)
-                            {
-                                validLabValues = false;
-                                break;
-                            }
-                        }
-                        if (!validLabValues)
-                        {
-                            testTypeIndex++;
-                            if (testTypeIndex >= testTypes.Count)
-                                testTypeIndex = 0;
-                            continue;
-                        }
+
                         TestResult result = null;
                         if (batch.BatchStatus == "done")
                         {
@@ -378,6 +367,7 @@ namespace MedLab.Model.Utils
                         };
 
                         batch.TestOrders.Add(order);
+                        batch.Cost += testType.Cost;
                         orderID++;
                         testsAdded++;
                     }

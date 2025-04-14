@@ -44,25 +44,25 @@
             <Label Content="{Binding ReceptionistsAmount}" Grid.Row="5" Grid.Column="1"/>
 
             <Label Content="Patients" Grid.Row="0" Grid.Column="3" VerticalAlignment="Bottom"/>
-            <Slider Value="{Binding PatientAmount, UpdateSourceTrigger=PropertyChanged}" IsSnapToTickEnabled="True" Minimum="1" Maximum="100" Grid.Row="1" Grid.Column="3"/>
+            <Slider Value="{Binding PatientAmount, UpdateSourceTrigger=PropertyChanged}" IsSnapToTickEnabled="True" Minimum="1" Maximum="500" Grid.Row="1" Grid.Column="3"/>
             <Label Content="{Binding PatientAmount}" Grid.Row="2" Grid.Column="3"/>
 
             <Label Grid.Row="0" Grid.Column="4" VerticalAlignment="Bottom">
-                <TextBlock Text="Batches per patient"
+                <TextBlock Text="Max batches per patient"
                 TextWrapping="Wrap" />
             </Label>
             <Slider Value="{Binding BatchesPerPatient, UpdateSourceTrigger=PropertyChanged}" IsSnapToTickEnabled="True" Minimum="1" Maximum="10" Grid.Row="1" Grid.Column="4"/>
             <Label Content="{Binding BatchesPerPatient}" Grid.Row="2" Grid.Column="4"/>
 
             <Label Grid.Row="3" Grid.Column="3" VerticalAlignment="Bottom">
-                <TextBlock Text="Panels per batch"
+                <TextBlock Text="Max panels per batch"
                 TextWrapping="Wrap"/>
             </Label>
             <Slider Value="{Binding PanelsPerBatch, UpdateSourceTrigger=PropertyChanged}" IsSnapToTickEnabled="True" Minimum="0" Maximum="2" Grid.Row="4" Grid.Column="3"/>
             <Label  Content="{Binding PanelsPerBatch}" Grid.Row="5" Grid.Column="3"/>
 
             <Label Grid.Row="3" Grid.Column="4" VerticalAlignment="Bottom">
-                <TextBlock Text="Orders per batch"
+                <TextBlock Text="Max orders per batch"
                 TextWrapping="Wrap"/>
             </Label>
             <Slider Value="{Binding OrdersPerBatch, UpdateSourceTrigger=PropertyChanged}" IsSnapToTickEnabled="True" Minimum="1" Maximum="5" Grid.Row="4" Grid.Column="4"/>

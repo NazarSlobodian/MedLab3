@@ -181,14 +181,14 @@ namespace MedLab.Model.Utils
         }
         public string GenerateBatchStatus()
         {
-            switch (random.Next(0, 2))
+            switch (random.Next(0, 3))
             {
                 case 0:
                     return "queued";
                 case 1:
-                    return "done";
-                case 2:
                     return "processing";
+                case 2:
+                    return "done";
                 default:
                     return "";
             }
