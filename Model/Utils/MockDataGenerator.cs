@@ -288,7 +288,9 @@ namespace MedLab.Model.Utils
                         foreach (TestType testType in testCollection[testPanelIndex].TestTypes)
                         {
                             TestResult result = null;
-                            if (batch.BatchStatus == "done")
+                            if (batch.BatchStatus == "processing" && batch.TestOrders.Count != 0 && random.NextDouble() < 0.5)
+                                continue;
+                            else if (batch.BatchStatus == "done")
                             {
                                 int patientAge = (int)(DateTime.Now - patient.DateOfBirth.ToDateTime(TimeOnly.Parse("00:00 AM"))).TotalDays / 365;
                                 double testResult = 0.0;
@@ -334,7 +336,9 @@ namespace MedLab.Model.Utils
                         bool validLabValues = true;
 
                         TestResult result = null;
-                        if (batch.BatchStatus == "done")
+                        if (batch.BatchStatus == "processing" && batch.TestOrders.Count != 0 && random.NextDouble() < 0.5)
+                            continue;
+                        else if (batch.BatchStatus == "done")
                         {
                             int patientAge = (int)(DateTime.Now - patient.DateOfBirth.ToDateTime(TimeOnly.Parse("00:00 AM"))).TotalDays / 365;
                             double testResult = 0.0;
