@@ -414,16 +414,30 @@ namespace MedLab.Model.Utils
             }
             foreach (Laboratory lab in labs)
             {
-                foreach (LabWorker labWorker in lab.LabWorkers)
+                for (int i = 0;i < lab.LabWorkers.Count; i++)
                 {
-                    users.Add(new User
+                    if (i != 0)
                     {
-                        UserId = userID,
-                        Role = "lab_worker",
-                        ReferencedId = labWorker.LabWorkerId,
-                        Login = labWorker.Email,
-                        Hash = PasswordHasher.HashPassword(labWorker.Email.Substring(0, 2)),
-                    });
+                        users.Add(new User
+                        {
+                            UserId = userID,
+                            Role = "lab_admin",
+                            ReferencedId = lab.LabWorkers.ElementAt(i).LabWorkerId,
+                            Login = lab.LabWorkers.ElementAt(i).Email,
+                            Hash = PasswordHasher.HashPassword(lab.LabWorkers.ElementAt(i).Email.Substring(0, 2)),
+                        });
+                    }
+                    else
+                    {
+                        users.Add(new User
+                        {
+                            UserId = userID,
+                            Role = "lab_worker",
+                            ReferencedId = lab.LabWorkers.ElementAt(i).LabWorkerId,
+                            Login = lab.LabWorkers.ElementAt(i).Email,
+                            Hash = PasswordHasher.HashPassword(lab.LabWorkers.ElementAt(i).Email.Substring(0, 2)),
+                        });
+                    }
                     userID++;
 
                 }
