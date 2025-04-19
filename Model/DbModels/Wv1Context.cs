@@ -16,6 +16,8 @@ public partial class Wv1Context : DbContext
     {
     }
 
+    public virtual DbSet<ActivityLog> ActivityLogs { get; set; }
+
     public virtual DbSet<CollectionPoint> CollectionPoints { get; set; }
 
     public virtual DbSet<LabWorker> LabWorkers { get; set; }
@@ -25,6 +27,8 @@ public partial class Wv1Context : DbContext
     public virtual DbSet<Patient> Patients { get; set; }
 
     public virtual DbSet<Receptionist> Receptionists { get; set; }
+
+    public virtual DbSet<RegistrationCode> RegistrationCodes { get; set; }
 
     public virtual DbSet<TestBatch> TestBatches { get; set; }
 
@@ -49,6 +53,33 @@ public partial class Wv1Context : DbContext
         modelBuilder
             .UseCollation("utf8mb4_0900_ai_ci")
             .HasCharSet("utf8mb4");
+
+        modelBuilder.Entity<ActivityLog>(entity =>
+        {
+            entity.HasKey(e => e.ActivityLogId).HasName("PRIMARY");
+
+            entity.ToTable("activity_logs");
+
+            entity.HasIndex(e => e.DateTime, "fasterSliceSelect");
+
+            entity.Property(e => e.ActivityLogId).HasColumnName("activityLogID");
+            entity.Property(e => e.Action)
+                .HasMaxLength(45)
+                .HasColumnName("action");
+            entity.Property(e => e.Actor)
+                .HasMaxLength(320)
+                .HasColumnName("actor");
+            entity.Property(e => e.DateTime)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime")
+                .HasColumnName("dateTime");
+            entity.Property(e => e.Description)
+                .HasMaxLength(200)
+                .HasColumnName("description");
+            entity.Property(e => e.Status)
+                .HasMaxLength(20)
+                .HasColumnName("status");
+        });
 
         modelBuilder.Entity<CollectionPoint>(entity =>
         {
@@ -156,9 +187,13 @@ public partial class Wv1Context : DbContext
 
             entity.ToTable("patients");
 
+            entity.HasIndex(e => e.DateOfBirth, "birthdate");
+
             entity.HasIndex(e => e.ContactNumber, "contactNumber_UNIQUE").IsUnique();
 
             entity.HasIndex(e => e.Email, "email_UNIQUE").IsUnique();
+
+            entity.HasIndex(e => e.FullName, "fullName");
 
             entity.HasIndex(e => new { e.FullName, e.Gender, e.DateOfBirth, e.Email, e.ContactNumber }, "unique_patient").IsUnique();
 
@@ -209,6 +244,20 @@ public partial class Wv1Context : DbContext
                 .HasConstraintName("collectionPointID");
         });
 
+        modelBuilder.Entity<RegistrationCode>(entity =>
+        {
+            entity.HasKey(e => e.Login).HasName("PRIMARY");
+
+            entity.ToTable("registration_codes");
+
+            entity.Property(e => e.Login)
+                .HasMaxLength(320)
+                .HasColumnName("login");
+            entity.Property(e => e.Code)
+                .HasMaxLength(8)
+                .HasColumnName("code");
+        });
+
         modelBuilder.Entity<TestBatch>(entity =>
         {
             entity.HasKey(e => e.TestBatchId).HasName("PRIMARY");
@@ -255,9 +304,9 @@ public partial class Wv1Context : DbContext
 
             entity.HasIndex(e => e.TestTypeId, "normalValuesTestTypeID_idx");
 
-            entity.Property(e => e.TestNormalValueId)
-                .ValueGeneratedNever()
-                .HasColumnName("testNormalValueID");
+            entity.HasIndex(e => new { e.TestTypeId, e.Gender, e.MinAge, e.MaxAge }, "tnvLookup");
+
+            entity.Property(e => e.TestNormalValueId).HasColumnName("testNormalValueID");
             entity.Property(e => e.Gender)
                 .HasMaxLength(1)
                 .IsFixedLength()
@@ -332,6 +381,7 @@ public partial class Wv1Context : DbContext
             entity.Property(e => e.Cost)
                 .HasPrecision(7, 2)
                 .HasColumnName("cost");
+            entity.Property(e => e.IsActive).HasColumnName("isActive");
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
                 .HasColumnName("name");
@@ -363,6 +413,8 @@ public partial class Wv1Context : DbContext
 
             entity.ToTable("test_results");
 
+            entity.HasIndex(e => e.LabWorkerId, "resLabWorkerID_idx");
+
             entity.HasIndex(e => e.TestOrderId, "testOrderID_idx");
 
             entity.Property(e => e.TestOrderId)
@@ -372,9 +424,15 @@ public partial class Wv1Context : DbContext
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime")
                 .HasColumnName("dateOfTest");
+            entity.Property(e => e.LabWorkerId).HasColumnName("labWorkerID");
             entity.Property(e => e.Result)
                 .HasPrecision(5, 2)
                 .HasColumnName("result");
+
+            entity.HasOne(d => d.LabWorker).WithMany(p => p.TestResults)
+                .HasForeignKey(d => d.LabWorkerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("resLabWorkerID");
 
             entity.HasOne(d => d.TestOrder).WithOne(p => p.TestResult)
                 .HasForeignKey<TestResult>(d => d.TestOrderId)
@@ -394,6 +452,7 @@ public partial class Wv1Context : DbContext
             entity.Property(e => e.Cost)
                 .HasPrecision(7, 2)
                 .HasColumnName("cost");
+            entity.Property(e => e.IsActive).HasColumnName("isActive");
             entity.Property(e => e.MeasurementsUnit)
                 .HasMaxLength(15)
                 .HasColumnName("measurementsUnit");
@@ -407,6 +466,8 @@ public partial class Wv1Context : DbContext
             entity.HasKey(e => e.UserId).HasName("PRIMARY");
 
             entity.ToTable("users");
+
+            entity.HasIndex(e => e.Login, "login");
 
             entity.Property(e => e.UserId).HasColumnName("userID");
             entity.Property(e => e.Hash)

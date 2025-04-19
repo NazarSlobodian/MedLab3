@@ -257,8 +257,8 @@ namespace MedLab.Model.Utils
                     DateTime openingDate = new DateTime(2023, 1, 1);
                     DateTime start = patient.DateOfBirth.ToDateTime(TimeOnly.Parse("00:00 AM")) < openingDate ? openingDate : patient.DateOfBirth.ToDateTime(TimeOnly.Parse("00:00 AM")).AddMonths(1);
                     //DateTime timeOfCreation = randomDataGenerator.GenerateDateTime(new DateTime(2024, 9, 2), new DateTime(2024, 10, 1));
-                    DateTime timeOfCreation = randomDataGenerator.GenerateDateTime(start, DateTime.UtcNow);
-                    if (timeOfCreation < DateTime.Now.AddDays(-7))
+                    DateTime timeOfCreation = randomDataGenerator.GenerateDateTime(start, DateTime.UtcNow).AddDays(-7);
+                    if (timeOfCreation < DateTime.Now.AddDays(-14))
                         status = "done";
                     patient.TestBatches.Add(new TestBatch()
                     {
@@ -287,6 +287,7 @@ namespace MedLab.Model.Utils
                         batch.Cost += testCollection[testPanelIndex].Cost;
                         foreach (TestType testType in testCollection[testPanelIndex].TestTypes)
                         {
+                            Laboratory lab = labs[random.Next(0, labs.Count)];
                             TestResult result = null;
                             if (batch.BatchStatus == "processing" && batch.TestOrders.Count != 0 && random.NextDouble() < 0.5)
                                 continue;
@@ -306,12 +307,13 @@ namespace MedLab.Model.Utils
                                 {
                                     testResult = randomDataGenerator.RandomTestResult(0.0, 100.0);
                                 }
-                                DateTime dateOfTest = randomDataGenerator.GenerateDate(batch.DateOfCreation, batch.DateOfCreation.AddDays(5));
+                                DateTime dateOfTest = randomDataGenerator.GenerateDateTime(batch.DateOfCreation.AddDays(1), batch.DateOfCreation.AddDays(5));
                                 result = new TestResult()
                                 {
                                     TestOrderId = orderID,
                                     Result = (decimal)testResult,
-                                    DateOfTest = dateOfTest
+                                    DateOfTest = dateOfTest,
+                                    LabWorker = lab.LabWorkers.ElementAt(random.Next(0, labs.Count))
                                 };
                             }
                             TestOrder order = new TestOrder()
@@ -319,7 +321,7 @@ namespace MedLab.Model.Utils
                                 TestOrderId = orderID,
                                 TestType = testType,
                                 TestResult = result,
-                                Laboratory = labs[random.Next(0, labs.Count)],
+                                Laboratory = lab,
                                 TestPanelId = testCollection[testPanelIndex].TestPanelId
                             };
                             batch.TestOrders.Add(order);
@@ -333,6 +335,7 @@ namespace MedLab.Model.Utils
                     {
                         int testTypeIndex = random.Next(0, testTypes.Count);
                         TestType testType = testTypes[testTypeIndex];
+                        Laboratory lab = labs[random.Next(0, labs.Count)];
                         bool validLabValues = true;
 
                         TestResult result = null;
@@ -359,7 +362,8 @@ namespace MedLab.Model.Utils
                             {
                                 TestOrderId = orderID,
                                 Result = (decimal)testResult,
-                                DateOfTest = dateOfTest
+                                DateOfTest = dateOfTest,
+                                LabWorker = lab.LabWorkers.ElementAt(random.Next(0, labs.Count))
                             };
                         }
                         TestOrder order = new TestOrder()
@@ -367,7 +371,7 @@ namespace MedLab.Model.Utils
                             TestOrderId = orderID,
                             TestType = testType,
                             TestResult = result,
-                            Laboratory = labs[random.Next(0, labs.Count)]
+                            Laboratory = lab
                         };
 
                         batch.TestOrders.Add(order);
@@ -421,7 +425,7 @@ namespace MedLab.Model.Utils
                         users.Add(new User
                         {
                             UserId = userID,
-                            Role = "lab_admin",
+                            Role = "lab_worker",
                             ReferencedId = lab.LabWorkers.ElementAt(i).LabWorkerId,
                             Login = lab.LabWorkers.ElementAt(i).Email,
                             Hash = PasswordHasher.HashPassword(lab.LabWorkers.ElementAt(i).Email.Substring(0, 2)),
@@ -429,10 +433,11 @@ namespace MedLab.Model.Utils
                     }
                     else
                     {
+                        
                         users.Add(new User
                         {
                             UserId = userID,
-                            Role = "lab_worker",
+                            Role = "lab_admin",
                             ReferencedId = lab.LabWorkers.ElementAt(i).LabWorkerId,
                             Login = lab.LabWorkers.ElementAt(i).Email,
                             Hash = PasswordHasher.HashPassword(lab.LabWorkers.ElementAt(i).Email.Substring(0, 2)),
