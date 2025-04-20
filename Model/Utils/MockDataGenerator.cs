@@ -313,7 +313,7 @@ namespace MedLab.Model.Utils
                                     TestOrderId = orderID,
                                     Result = (decimal)testResult,
                                     DateOfTest = dateOfTest,
-                                    LabWorker = lab.LabWorkers.ElementAt(random.Next(0, labs.Count))
+                                    LabWorker = lab.LabWorkers.ElementAt(random.Next(0, lab.LabWorkers.Count))
                                 };
                             }
                             TestOrder order = new TestOrder()
@@ -363,7 +363,7 @@ namespace MedLab.Model.Utils
                                 TestOrderId = orderID,
                                 Result = (decimal)testResult,
                                 DateOfTest = dateOfTest,
-                                LabWorker = lab.LabWorkers.ElementAt(random.Next(0, labs.Count))
+                                LabWorker = lab.LabWorkers.ElementAt(random.Next(0, lab.LabWorkers.Count))
                             };
                         }
                         TestOrder order = new TestOrder()
