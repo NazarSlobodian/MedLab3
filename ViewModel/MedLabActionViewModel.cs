@@ -102,7 +102,7 @@ namespace MedLab.ViewModel
             }
         }
 
-        private int workersPerLab = 1;
+        private int workersPerLab = 2;
 
         public int WorkersPerLab
         {
