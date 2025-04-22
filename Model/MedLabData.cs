@@ -45,6 +45,7 @@ namespace MedLab.Model
             context.CollectionPoints.AddRange(collectionPoints);
             context.Laboratories.AddRange(laboratories);
             context.Patients.AddRange(patients);
+            context.SaveChanges();
             context.Users.AddRange(users);
             context.SaveChanges();
         }
