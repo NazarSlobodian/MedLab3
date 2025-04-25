@@ -38,6 +38,8 @@ namespace MedLab.Model
             sb.Append("TRUNCATE TABLE test_results;\r\n");
             sb.Append("TRUNCATE TABLE test_types;\r\n");
             sb.Append("TRUNCATE TABLE users;\r\n");
+            sb.Append("TRUNCATE TABLE activity_logs;\r\n");
+            sb.Append("TRUNCATE TABLE registration_codes;\r\n");
 
             sb.Append("SET FOREIGN_KEY_CHECKS = 1;\r\n");
 
